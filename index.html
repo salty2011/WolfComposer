@@ -355,6 +355,24 @@ services:
       - WOLF_LOG_LEVEL={{wolfLogLevel}}
       - WOLF_RENDER_NODE={{wolfRenderNode}}
       - WOLF_ENCODER_NODE={{wolfEncoderNode}}
+      {{#if useWolfStopContainerOnExit}}
+      - WOLF_STOP_CONTAINER_ON_EXIT={{wolfStopContainerOnExit}}
+      {{/if}}
+      {{#if useCustomWolfDockerFakeUdevPath}}
+      - WOLF_DOCKER_FAKE_UDEV_PATH={{wolfDockerFakeUdevPath}}
+      {{/if}}
+      {{#if useCustomWolfDockerSocket}}
+      - WOLF_DOCKER_SOCKET={{wolfDockerSocket}}
+      {{/if}}
+      {{#if useCustomWolfPulseImage}}
+      - WOLF_PULSE_IMAGE={{wolfPulseImage}}
+      {{/if}}
+      {{#if useCustomGstDebug}}
+      - GST_DEBUG={{gstDebug}}
+      {{/if}}
+      {{#if useCustomRustBacktrace}}
+      - RUST_BACKTRACE={{rustBacktrace}}
+      {{/if}}
       {{#if hasNvidia}}
       - NVIDIA_DRIVER_CAPABILITIES=all
       - NVIDIA_VISIBLE_DEVICES=all
@@ -442,13 +460,19 @@ services:
                 wolfCfgFile: form.useCustomWolfCfgFile.checked ? form.wolfCfgFile.value : '/wolf_config/cfg/config.toml',
                 wolfPrivateKeyFile: form.useCustomWolfPrivateKeyFile.checked ? form.wolfPrivateKeyFile.value : '/wolf_config/cfg/key.pem',
                 wolfPrivateCertFile: form.useCustomWolfPrivateCertFile.checked ? form.wolfPrivateCertFile.value : '/wolf_config/cfg/cert.pem',
-                wolfStopContainerOnExit: form.useWolfStopContainerOnExit.checked ? form.wolfStopContainerOnExit.checked : true,
-                wolfDockerFakeUdevPath: form.useCustomWolfDockerFakeUdevPath.checked ? form.wolfDockerFakeUdevPath.value : '/wolf_config/cfg/fake-udev',
-                wolfDockerSocket: form.useCustomWolfDockerSocket.checked ? form.wolfDockerSocket.value : '/var/run/docker.sock',
-                wolfPulseImage: form.useCustomWolfPulseImage.checked ? form.wolfPulseImage.value : 'ghcr.io/games-on-whales/pulseaudio:master',
+                useWolfStopContainerOnExit: form.useWolfStopContainerOnExit.checked,
+                wolfStopContainerOnExit: form.wolfStopContainerOnExit.checked,
+                useCustomWolfDockerFakeUdevPath: form.useCustomWolfDockerFakeUdevPath.checked,
+                wolfDockerFakeUdevPath: form.wolfDockerFakeUdevPath.value,
+                useCustomWolfDockerSocket: form.useCustomWolfDockerSocket.checked,
+                wolfDockerSocket: form.wolfDockerSocket.value,
+                useCustomWolfPulseImage: form.useCustomWolfPulseImage.checked,
+                wolfPulseImage: form.wolfPulseImage.value,
                 wolfLogLevel: form.useCustomWolfLogLevel.checked ? form.wolfLogLevel.value : 'INFO',
-                gstDebug: form.useCustomGstDebug.checked ? form.gstDebug.value : '2',
-                rustBacktrace: form.useCustomRustBacktrace.checked ? form.rustBacktrace.value : 'full',
+                useCustomGstDebug: form.useCustomGstDebug.checked,
+                gstDebug: form.gstDebug.value,
+                useCustomRustBacktrace: form.useCustomRustBacktrace.checked,
+                rustBacktrace: form.rustBacktrace.value,
                 isSingleCard: isSingleCard,
                 hasNvidia: isSingleCard ? form.singleGpuType.value === 'nvidia' : 
                            (form.renderGpuType.value === 'nvidia' || form.encoderGpuType.value === 'nvidia'),
