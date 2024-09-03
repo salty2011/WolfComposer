@@ -582,9 +582,9 @@ services:
             instructions += `
             <p>Ensure proper permissions:</p>
             <p>All host paths used in the configuration require the permissions that the container is running as. Here are the specified host paths:</p>
-            <pre><code class="language-bash">${context.hostWolfLocation}
-${context.useCustomAppsStateFolder ? context.hostAppsStateFolder : context.hostWolfLocation + '/clients'}
-/var/run/docker.sock</code></pre>
+            <pre><code class="language-bash">${context.hostWolfLocation}</code></pre>
+            <pre><code class="language-bash">${context.useCustomAppsStateFolder ? context.hostAppsStateFolder : context.hostWolfLocation + '/clients'}</code></pre>
+            <pre><code class="language-bash">/var/run/docker.sock</code></pre>
             <p>Create and run the Docker Compose file:</p>
             <ol>
                 <li>Create a new file named <code>docker-compose.yml</code> in your desired directory:</li>
