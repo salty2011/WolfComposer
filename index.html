@@ -244,29 +244,21 @@
 
         <div class="section">
             <h3>2. Wolf Configuration</h3>
-            <label for="hostWolfLocation">Host Wolf Location:</label>
-            <input type="text" id="hostWolfLocation" name="hostWolfLocation" value="/mnt/cache/appdata/wolf3">
+            <label for="hostWolfLocation">Host Wolf location:</label>
+            <input type="text" id="hostWolfLocation" name="hostWolfLocation" value="/wolf_host">
             
             <div class="subsection">
-                <label>
-                    <input type="checkbox" id="useCustomAppsStateFolder" name="useCustomAppsStateFolder" onchange="toggleCustomAppsStateFolder()">
-                    Use custom HOST_APPS_STATE_FOLDER
-                </label>
-                <div id="customAppsStateFolderInput" class="hidden">
-                    <label for="hostAppsStateFolder">Custom HOST_APPS_STATE_FOLDER:</label>
-                    <input type="text" id="hostAppsStateFolder" name="hostAppsStateFolder" value="/mnt/cache/appdata/wolf_clients">
-                </div>
-            </div>
-        </div>
+                <h4>Advanced Configuration</h4>
+                <div id="advancedOptions">
+                    <label>
+                        <input type="checkbox" id="useCustomAppsStateFolder" name="useCustomAppsStateFolder" onchange="toggleCustomAppsStateFolder()">
+                        Use custom folder for application state (advanced)
+                    </label>
+                    <div id="customAppsStateFolderInput" class="hidden">
+                        <label for="hostAppsStateFolder">Custom application state folder:</label>
+                        <input type="text" id="hostAppsStateFolder" name="hostAppsStateFolder" value="/mnt/cache/appdata/wolf_clients">
+                    </div>
 
-        <div class="section">
-            <h3>3. Advanced Configuration</h3>
-            <label>
-                <input type="checkbox" id="advancedSetup" name="advancedSetup" onchange="toggleAdvancedOptions()">
-                Show Advanced Options
-            </label>
-            <div id="advancedOptions" class="advanced-options hidden">
-                <div class="subsection">
                     <label for="xdgRuntimeDir">XDG_RUNTIME_DIR:</label>
                     <input type="text" id="xdgRuntimeDir" name="xdgRuntimeDir" value="/wolf_config/cfg/sockets">
 
@@ -357,11 +349,6 @@ services:
             document.getElementById('importModal').style.display = 'none';
         }
 
-        function toggleAdvancedOptions() {
-            const advancedOptions = document.getElementById('advancedOptions');
-            advancedOptions.classList.toggle('hidden', !document.getElementById('advancedSetup').checked);
-        }
-
         function toggleCardSetup() {
             const singleCardOptions = document.getElementById('singleCardOptions');
             const dualCardOptions = document.getElementById('dualCardOptions');
@@ -403,6 +390,13 @@ services:
             const generatedConfig = template(context);
             document.getElementById('output').textContent = generatedConfig;
             document.getElementById('output-container').style.display = 'block';
+        }
+
+        // Initialize the form with default values
+        function initializeForm() {
+            document.getElementById('useCustomAppsStateFolder').checked = false;
+            toggleCustomAppsStateFolder();
+            toggleCardSetup();
         }
 
         function copyToClipboard() {
@@ -484,11 +478,8 @@ services:
             }
         }
 
-        // Initialize the card setup options on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            toggleCardSetup();
-            toggleCustomAppsStateFolder();
-        });
+        // Initialize the form on page load
+        document.addEventListener('DOMContentLoaded', initializeForm);
     </script>
 </body>
 </html>
