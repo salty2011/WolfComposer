@@ -220,17 +220,6 @@
 <body>
     <h1>WolfComposer</h1>
     
-    <button onclick="openImportModal()">Import Existing Config</button>
-
-    <div id="importModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeImportModal()">&times;</span>
-            <h2>Import Existing Config</h2>
-            <textarea id="importConfig" rows="10" placeholder="Paste your existing Docker Compose config here..."></textarea>
-            <button onclick="importConfig()">Import</button>
-        </div>
-    </div>
-
     <form id="configForm">
         <h2>Configuration Options</h2>
         
@@ -500,14 +489,6 @@ services:
     </script>
 
     <script>
-        function openImportModal() {
-            document.getElementById('importModal').style.display = 'block';
-        }
-
-        function closeImportModal() {
-            document.getElementById('importModal').style.display = 'none';
-        }
-
         function toggleCardSetup() {
             const singleCardOptions = document.getElementById('singleCardOptions');
             const dualCardOptions = document.getElementById('dualCardOptions');
@@ -654,86 +635,6 @@ services:
             document.execCommand('copy');
             window.getSelection().removeAllRanges();
             alert('Config copied to clipboard!');
-        }
-
-        function importConfig() {
-            const importedConfig = document.getElementById('importConfig').value;
-            try {
-                const parsedConfig = jsyaml.load(importedConfig);
-                const wolfService = parsedConfig.services.wolf;
-                const environment = wolfService.environment.reduce((acc, item) => {
-                    const [key, value] = item.split('=');
-                    acc[key] = value;
-                    return acc;
-                }, {});
-
-                document.getElementById('xdgRuntimeDir').value = environment.XDG_RUNTIME_DIR || '';
-                document.getElementById('useCustomXdgRuntimeDir').checked = environment.XDG_RUNTIME_DIR !== '/wolf_config/cfg/sockets';
-                toggleInput('useCustomXdgRuntimeDir', 'xdgRuntimeDir');
-
-                const hostWolfLocation = wolfService.volumes.find(v => v.includes(':/wolf_config:rw')).split(':')[0];
-                document.getElementById('hostWolfLocation').value = hostWolfLocation || '/mnt/cache/appdata/wolf3';
-                
-                const hostAppsStateFolder = environment.HOST_APPS_STATE_FOLDER;
-                if (hostAppsStateFolder && hostAppsStateFolder !== '/wolf_config/clients') {
-                    document.getElementById('useCustomAppsStateFolder').checked = true;
-                    document.getElementById('hostAppsStateFolder').value = hostAppsStateFolder;
-                } else {
-                    document.getElementById('useCustomAppsStateFolder').checked = false;
-                    document.getElementById('hostAppsStateFolder').value = '/mnt/games/wolf_clients';
-                }
-                toggleCustomAppsStateFolder();
-                
-                document.getElementById('wolfCfgFile').value = environment.WOLF_CFG_FILE || '';
-                document.getElementById('useCustomWolfCfgFile').checked = environment.WOLF_CFG_FILE !== '/wolf_config/cfg/config.toml';
-                toggleInput('useCustomWolfCfgFile', 'wolfCfgFile');
-
-                document.getElementById('wolfPrivateKeyFile').value = environment.WOLF_PRIVATE_KEY_FILE || '';
-                document.getElementById('useCustomWolfPrivateKeyFile').checked = environment.WOLF_PRIVATE_KEY_FILE !== '/wolf_config/cfg/key.pem';
-                toggleInput('useCustomWolfPrivateKeyFile', 'wolfPrivateKeyFile');
-
-                document.getElementById('wolfPrivateCertFile').value = environment.WOLF_PRIVATE_CERT_FILE || '';
-                document.getElementById('useCustomWolfPrivateCertFile').checked = environment.WOLF_PRIVATE_CERT_FILE !== '/wolf_config/cfg/cert.pem';
-                toggleInput('useCustomWolfPrivateCertFile', 'wolfPrivateCertFile');
-
-                document.getElementById('wolfLogLevel').value = environment.WOLF_LOG_LEVEL || '';
-                document.getElementById('useCustomWolfLogLevel').checked = environment.WOLF_LOG_LEVEL !== 'DEBUG';
-                toggleInput('useCustomWolfLogLevel', 'wolfLogLevel');
-
-                const hasNvidia = environment.NVIDIA_DRIVER_CAPABILITIES && environment.NVIDIA_VISIBLE_DEVICES;
-                const isSingleCard = environment.WOLF_RENDER_NODE === environment.WOLF_ENCODER_NODE;
-
-                if (isSingleCard) {
-                    document.querySelector('input[name="cardSetup"][value="single"]').checked = true;
-                    document.querySelector('input[name="singleGpuType"][value="' + (hasNvidia ? 'nvidia' : 'intel_amd') + '"]').checked = true;
-                    document.getElementById('singleCardPath').value = environment.WOLF_RENDER_NODE ? environment.WOLF_RENDER_NODE.split('/').pop() : 'renderD128';
-                } else {
-                    document.querySelector('input[name="cardSetup"][value="dual"]').checked = true;
-                    document.querySelector('input[name="renderGpuType"][value="' + (hasNvidia ? 'nvidia' : 'intel_amd') + '"]').checked = true;
-                    document.querySelector('input[name="encoderGpuType"][value="' + (hasNvidia ? 'nvidia' : 'intel_amd') + '"]').checked = true;
-                    
-                    const renderNodePath = environment.WOLF_RENDER_NODE ? environment.WOLF_RENDER_NODE.split('/').pop() : 'renderD129';
-                    const encoderNodePath = environment.WOLF_ENCODER_NODE ? environment.WOLF_ENCODER_NODE.split('/').pop() : 'renderD128';
-                    document.getElementById('renderNodePath').value = renderNodePath;
-                    document.getElementById('encoderNodePath').value = encoderNodePath;
-                }
-
-                toggleCardSetup();
-                toggleAdvancedOptions();
-
-                closeImportModal();
-                alert('Config imported successfully!');
-            } catch (error) {
-                console.error('Error parsing config:', error);
-                alert('Error importing config. Please check the format and try again.');
-            }
-        }
-
-        // Close modal when clicking outside of it
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('importModal')) {
-                closeImportModal();
-            }
         }
 
         // Initialize the form on page load
