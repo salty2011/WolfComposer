@@ -281,13 +281,7 @@
                 <h3>Wolf Configuration</h3>
                 <label for="hostWolfLocation">Host Wolf location:</label>
                 <input type="text" id="hostWolfLocation" name="hostWolfLocation" value="/wolf_host">
-            </div>
-        </div>
-
-        <div id="advanced" class="tab-content">
-            <div class="section">
-                <p style="color: red; font-weight: bold;">YOU SHOULD NOT MESS WITH THESE SETTINGS AS IT CAN BREAK WOLF</p>
-                <h3>Advanced Configuration</h3>
+                
                 <div class="option-row">
                     <input type="checkbox" id="useCustomAppsStateFolder" onchange="toggleCustomAppsStateFolder()">
                     <div class="option-label">
@@ -296,6 +290,13 @@
                     </div>
                     <input type="text" id="hostAppsStateFolder" value="/mnt/games/wolf_clients" disabled>
                 </div>
+            </div>
+        </div>
+
+        <div id="advanced" class="tab-content">
+            <div class="section">
+                <p style="color: red; font-weight: bold;">YOU SHOULD NOT MESS WITH THESE SETTINGS AS IT CAN BREAK WOLF</p>
+                <h3>Advanced Configuration</h3>
                 <div class="option-row">
                     <input type="checkbox" id="useCustomXdgRuntimeDir" onchange="toggleInput('useCustomXdgRuntimeDir', 'xdgRuntimeDir')">
                     <div class="option-label">
