@@ -154,6 +154,8 @@
                 <label>
                     <input type="radio" name="renderGpuType" value="nvidia"> NVIDIA
                 </label>
+                <label for="renderCardNumber">Render Card Number:</label>
+                <input type="number" id="renderCardNumber" name="renderCardNumber" min="0" max="9" value="8">
                 <h4>Encoder Card:</h4>
                 <label>
                     <input type="radio" name="encoderGpuType" value="intel_amd" checked> Intel/AMD
@@ -161,6 +163,8 @@
                 <label>
                     <input type="radio" name="encoderGpuType" value="nvidia"> NVIDIA
                 </label>
+                <label for="encoderCardNumber">Encoder Card Number:</label>
+                <input type="number" id="encoderCardNumber" name="encoderCardNumber" min="0" max="9" value="9">
             </div>
         </div>
 
@@ -315,8 +319,8 @@ services:
                 hasNvidia: isSingleCard ? form.singleGpuType.value === 'nvidia' : 
                            (form.renderGpuType.value === 'nvidia' || form.encoderGpuType.value === 'nvidia'),
                 advancedSetup: form.advancedSetup.checked,
-                wolfRenderNode: isSingleCard ? form.singleCardPath.value : '/dev/dri',
-                wolfEncoderNode: isSingleCard ? form.singleCardPath.value : '/dev/dri'
+                wolfRenderNode: isSingleCard ? form.singleCardPath.value : `/dev/dri/renderD12${form.renderCardNumber.value}`,
+                wolfEncoderNode: isSingleCard ? form.singleCardPath.value : `/dev/dri/renderD12${form.encoderCardNumber.value}`
             };
 
             const generatedConfig = template(context);
@@ -376,6 +380,11 @@ services:
                     document.querySelector('input[name="cardSetup"][value="dual"]').checked = true;
                     document.querySelector('input[name="renderGpuType"][value="' + (hasNvidia ? 'nvidia' : 'intel_amd') + '"]').checked = true;
                     document.querySelector('input[name="encoderGpuType"][value="' + (hasNvidia ? 'nvidia' : 'intel_amd') + '"]').checked = true;
+                    
+                    const renderCardNumber = environment.WOLF_RENDER_NODE ? environment.WOLF_RENDER_NODE.slice(-1) : '8';
+                    const encoderCardNumber = environment.WOLF_ENCODER_NODE ? environment.WOLF_ENCODER_NODE.slice(-1) : '9';
+                    document.getElementById('renderCardNumber').value = renderCardNumber;
+                    document.getElementById('encoderCardNumber').value = encoderCardNumber;
                 }
 
                 toggleCardSetup();
