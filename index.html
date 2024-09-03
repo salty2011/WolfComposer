@@ -165,7 +165,10 @@
         </div>
 
         <div class="section">
-            <h3>2. Host Apps Location</h3>
+            <h3>2. Wolf Configuration</h3>
+            <label for="hostWolfLocation">Host Wolf Location:</label>
+            <input type="text" id="hostWolfLocation" name="hostWolfLocation" value="/mnt/cache/appdata/wolf3">
+            
             <label for="hostAppsStateFolder">HOST_APPS_STATE_FOLDER:</label>
             <input type="text" id="hostAppsStateFolder" name="hostAppsStateFolder" value="/wolf_config/clients">
         </div>
@@ -229,8 +232,8 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
       {{/if}}
     volumes:
-      - /mnt/cache/appdata/wolf3:/wolf_config:rw
-      - /mnt/cache/appdata/wolf3/cfg/sockets:/tmp/sockets:rw
+      - {{hostWolfLocation}}:/wolf_config:rw
+      - {{hostWolfLocation}}/cfg/sockets:/tmp/sockets:rw
       - /var/run/docker.sock:/var/run/docker.sock:rw
       - /dev/:/dev/:rw
       - /run/udev:/run/udev:rw
@@ -286,6 +289,7 @@ services:
             const isSingleCard = form.cardSetup.value === 'single';
             const context = {
                 xdgRuntimeDir: form.xdgRuntimeDir.value,
+                hostWolfLocation: form.hostWolfLocation.value,
                 hostAppsStateFolder: form.hostAppsStateFolder.value,
                 wolfCfgFile: form.wolfCfgFile.value,
                 wolfPrivateKeyFile: form.wolfPrivateKeyFile.value,
@@ -327,6 +331,8 @@ services:
                 }, {});
 
                 document.getElementById('xdgRuntimeDir').value = environment.XDG_RUNTIME_DIR || '';
+                const hostWolfLocation = wolfService.volumes.find(v => v.includes(':/wolf_config:rw')).split(':')[0];
+                document.getElementById('hostWolfLocation').value = hostWolfLocation || '/mnt/cache/appdata/wolf3';
                 document.getElementById('hostAppsStateFolder').value = environment.HOST_APPS_STATE_FOLDER || '';
                 document.getElementById('wolfCfgFile').value = environment.WOLF_CFG_FILE || '';
                 document.getElementById('wolfPrivateKeyFile').value = environment.WOLF_PRIVATE_KEY_FILE || '';
