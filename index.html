@@ -246,8 +246,6 @@
                                 <input type="radio" name="singleGpuType" value="nvidia"> NVIDIA
                             </label>
                         </div>
-                        <label for="singleCardPath">Encoder/Render Node Path:</label>
-                        <input type="text" id="singleCardPath" name="singleCardPath" value="renderD128" placeholder="e.g., renderD128" class="node-path-input">
                     </div>
                 </div>
                 
@@ -470,11 +468,7 @@ services:
     device_cgroup_rules:
       - 'c 13:* rmw'
     devices:
-      {{#if isSingleCard}}
       - {{wolfRenderNode}}
-      {{else}}
-      - /dev/dri
-      {{/if}}
       - /dev/uinput
     network_mode: host
     restart: unless-stopped
@@ -533,7 +527,7 @@ services:
                 wolfCfgFile: form.useCustomWolfCfgFile.checked ? form.wolfCfgFile.value : '/wolf_config/cfg/config.toml',
                 wolfPrivateKeyFile: form.useCustomWolfPrivateKeyFile.checked ? form.wolfPrivateKeyFile.value : '/wolf_config/cfg/key.pem',
                 wolfPrivateCertFile: form.useCustomWolfPrivateCertFile.checked ? form.wolfPrivateCertFile.value : '/wolf_config/cfg/cert.pem',
-                useWolfStopContainerOnExit: form.useWolfStopContainerOnExit.checked,
+                useWolfStopContainerOnExit: form.useCustomWolfStopContainerOnExit.checked,
                 wolfStopContainerOnExit: form.wolfStopContainerOnExit.checked,
                 useCustomWolfDockerFakeUdevPath: form.useCustomWolfDockerFakeUdevPath.checked,
                 wolfDockerFakeUdevPath: form.wolfDockerFakeUdevPath.value,
@@ -549,8 +543,8 @@ services:
                 isSingleCard: isSingleCard,
                 hasNvidia: isSingleCard ? form.singleGpuType.value === 'nvidia' : 
                            (form.renderGpuType.value === 'nvidia' || form.encoderGpuType.value === 'nvidia'),
-                wolfRenderNode: `/dev/dri/${isSingleCard ? form.singleCardPath.value : form.renderNodePath.value}`,
-                wolfEncoderNode: `/dev/dri/${isSingleCard ? form.singleCardPath.value : form.encoderNodePath.value}`
+                wolfRenderNode: isSingleCard ? '/dev/dri' : `/dev/dri/${form.renderNodePath.value}`,
+                wolfEncoderNode: isSingleCard ? '/dev/dri' : `/dev/dri/${form.encoderNodePath.value}`
             };
 
             const generatedConfig = template(context);
