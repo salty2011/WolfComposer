@@ -596,6 +596,9 @@ services:
             <pre><code class="language-bash">${context.hostWolfLocation}</code></pre>
             <pre><code class="language-bash">${context.useCustomAppsStateFolder ? context.hostAppsStateFolder : context.hostWolfLocation + '/clients'}</code></pre>
             <pre><code class="language-bash">/var/run/docker.sock</code></pre>
+            <p>Optional: Create the required directories (if they don't already exist):</p>
+            <pre><code class="language-bash">mkdir -p ${context.hostWolfLocation}
+mkdir -p ${context.useCustomAppsStateFolder ? context.hostAppsStateFolder : context.hostWolfLocation + '/clients'}</code></pre>
             <p>Create and run the Docker Compose file:</p>
             <ol>
                 <li>
