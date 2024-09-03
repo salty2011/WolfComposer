@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Compose Config Generator for Wolf</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <style>
+        /* CSS styles will go here */
+    </style>
+</head>
+<body>
+    <h1>Docker Compose Config Generator for Wolf</h1>
+    <form id="configForm">
+        <!-- Form fields will go here -->
+    </form>
+    <button id="generateBtn">Generate Configuration</button>
+    <button id="importBtn">Import Configuration</button>
+    <pre id="output"></pre>
+    <button id="copyBtn">Copy to Clipboard</button>
+
+    <div id="importModal" class="modal">
+        <div class="modal-content">
+            <h2>Import Configuration</h2>
+            <textarea id="importText" rows="10" cols="50"></textarea>
+            <button id="importConfirmBtn">Import</button>
+            <button id="importCancelBtn">Cancel</button>
+        </div>
+    </div>
+
+    <script id="compose-template" type="text/x-handlebars-template">
+        <!-- Handlebars template for Docker Compose YAML will go here -->
+    </script>
+
+    <script>
+        // JavaScript code will go here
+    </script>
+</body>
+</html>
