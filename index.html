@@ -169,8 +169,14 @@
             <label for="hostWolfLocation">Host Wolf Location:</label>
             <input type="text" id="hostWolfLocation" name="hostWolfLocation" value="/mnt/cache/appdata/wolf3">
             
-            <label for="hostAppsStateFolder">HOST_APPS_STATE_FOLDER:</label>
-            <input type="text" id="hostAppsStateFolder" name="hostAppsStateFolder" value="/wolf_config/clients">
+            <label>
+                <input type="checkbox" id="useCustomAppsStateFolder" name="useCustomAppsStateFolder" onchange="toggleCustomAppsStateFolder()">
+                Use custom HOST_APPS_STATE_FOLDER
+            </label>
+            <div id="customAppsStateFolderInput" style="display: none;">
+                <label for="hostAppsStateFolder">Custom HOST_APPS_STATE_FOLDER:</label>
+                <input type="text" id="hostAppsStateFolder" name="hostAppsStateFolder" value="/mnt/cache/appdata/wolf_clients">
+            </div>
         </div>
 
         <div class="section">
@@ -220,7 +226,7 @@ services:
     image: ghcr.io/games-on-whales/wolf:stable
     environment:
       - XDG_RUNTIME_DIR={{xdgRuntimeDir}}
-      - HOST_APPS_STATE_FOLDER={{hostAppsStateFolder}}
+      - HOST_APPS_STATE_FOLDER={{#if useCustomAppsStateFolder}}/wolf_clients{{else}}{{hostAppsStateFolder}}{{/if}}
       - WOLF_CFG_FILE={{wolfCfgFile}}
       - WOLF_PRIVATE_KEY_FILE={{wolfPrivateKeyFile}}
       - WOLF_PRIVATE_CERT_FILE={{wolfPrivateCertFile}}
@@ -234,6 +240,9 @@ services:
     volumes:
       - {{hostWolfLocation}}:/wolf_config:rw
       - {{hostWolfLocation}}/cfg/sockets:/tmp/sockets:rw
+      {{#if useCustomAppsStateFolder}}
+      - {{hostAppsStateFolder}}:/wolf_clients:rw
+      {{/if}}
       - /var/run/docker.sock:/var/run/docker.sock:rw
       - /dev/:/dev/:rw
       - /run/udev:/run/udev:rw
@@ -281,16 +290,23 @@ services:
             dualCardOptions.style.display = isSingleCard ? 'none' : 'block';
         }
 
+        function toggleCustomAppsStateFolder() {
+            const customAppsStateFolderInput = document.getElementById('customAppsStateFolderInput');
+            customAppsStateFolderInput.style.display = document.getElementById('useCustomAppsStateFolder').checked ? 'block' : 'none';
+        }
+
         function generateConfig() {
             const form = document.getElementById('configForm');
             const templateSource = document.getElementById('config-template').innerHTML;
             const template = Handlebars.compile(templateSource);
 
             const isSingleCard = form.cardSetup.value === 'single';
+            const useCustomAppsStateFolder = form.useCustomAppsStateFolder.checked;
             const context = {
                 xdgRuntimeDir: form.xdgRuntimeDir.value,
                 hostWolfLocation: form.hostWolfLocation.value,
-                hostAppsStateFolder: form.hostAppsStateFolder.value,
+                useCustomAppsStateFolder: useCustomAppsStateFolder,
+                hostAppsStateFolder: useCustomAppsStateFolder ? form.hostAppsStateFolder.value : '/wolf_config/clients',
                 wolfCfgFile: form.wolfCfgFile.value,
                 wolfPrivateKeyFile: form.wolfPrivateKeyFile.value,
                 wolfPrivateCertFile: form.wolfPrivateCertFile.value,
@@ -333,7 +349,17 @@ services:
                 document.getElementById('xdgRuntimeDir').value = environment.XDG_RUNTIME_DIR || '';
                 const hostWolfLocation = wolfService.volumes.find(v => v.includes(':/wolf_config:rw')).split(':')[0];
                 document.getElementById('hostWolfLocation').value = hostWolfLocation || '/mnt/cache/appdata/wolf3';
-                document.getElementById('hostAppsStateFolder').value = environment.HOST_APPS_STATE_FOLDER || '';
+                
+                const hostAppsStateFolder = environment.HOST_APPS_STATE_FOLDER;
+                if (hostAppsStateFolder && hostAppsStateFolder !== '/wolf_config/clients') {
+                    document.getElementById('useCustomAppsStateFolder').checked = true;
+                    document.getElementById('hostAppsStateFolder').value = hostAppsStateFolder;
+                    toggleCustomAppsStateFolder();
+                } else {
+                    document.getElementById('useCustomAppsStateFolder').checked = false;
+                    document.getElementById('hostAppsStateFolder').value = '/mnt/cache/appdata/wolf_clients';
+                }
+                
                 document.getElementById('wolfCfgFile').value = environment.WOLF_CFG_FILE || '';
                 document.getElementById('wolfPrivateKeyFile').value = environment.WOLF_PRIVATE_KEY_FILE || '';
                 document.getElementById('wolfPrivateCertFile').value = environment.WOLF_PRIVATE_CERT_FILE || '';
@@ -373,7 +399,10 @@ services:
         }
 
         // Initialize the card setup options on page load
-        document.addEventListener('DOMContentLoaded', toggleCardSetup);
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleCardSetup();
+            toggleCustomAppsStateFolder();
+        });
     </script>
 </body>
 </html>
