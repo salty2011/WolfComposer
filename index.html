@@ -126,13 +126,42 @@
         <h2>Configuration Options</h2>
         
         <div class="section">
-            <h3>1. Graphics Card Type</h3>
+            <h3>1. Graphics Card Setup</h3>
             <label>
-                <input type="radio" name="gpuType" value="intel_amd" checked> Intel/AMD
+                <input type="radio" name="cardSetup" value="single" checked onchange="toggleCardSetup()"> Single Card
             </label>
             <label>
-                <input type="radio" name="gpuType" value="nvidia"> NVIDIA
+                <input type="radio" name="cardSetup" value="dual" onchange="toggleCardSetup()"> Dual Card
             </label>
+            
+            <div id="singleCardOptions">
+                <h4>Card Type:</h4>
+                <label>
+                    <input type="radio" name="singleGpuType" value="intel_amd" checked> Intel/AMD
+                </label>
+                <label>
+                    <input type="radio" name="singleGpuType" value="nvidia"> NVIDIA
+                </label>
+                <label for="singleCardPath">GPU Device Path:</label>
+                <input type="text" id="singleCardPath" name="singleCardPath" value="/dev/dri/renderD128">
+            </div>
+            
+            <div id="dualCardOptions" style="display: none;">
+                <h4>Render Card:</h4>
+                <label>
+                    <input type="radio" name="renderGpuType" value="intel_amd" checked> Intel/AMD
+                </label>
+                <label>
+                    <input type="radio" name="renderGpuType" value="nvidia"> NVIDIA
+                </label>
+                <h4>Encoder Card:</h4>
+                <label>
+                    <input type="radio" name="encoderGpuType" value="intel_amd" checked> Intel/AMD
+                </label>
+                <label>
+                    <input type="radio" name="encoderGpuType" value="nvidia"> NVIDIA
+                </label>
+            </div>
         </div>
 
         <div class="section">
@@ -193,10 +222,8 @@ services:
       - WOLF_PRIVATE_KEY_FILE={{wolfPrivateKeyFile}}
       - WOLF_PRIVATE_CERT_FILE={{wolfPrivateCertFile}}
       - WOLF_LOG_LEVEL={{wolfLogLevel}}
-      {{#if advancedSetup}}
       - WOLF_RENDER_NODE={{wolfRenderNode}}
       - WOLF_ENCODER_NODE={{wolfEncoderNode}}
-      {{/if}}
       {{#if hasNvidia}}
       - NVIDIA_DRIVER_CAPABILITIES=all
       - NVIDIA_VISIBLE_DEVICES=all
@@ -210,8 +237,11 @@ services:
     device_cgroup_rules:
       - 'c 13:* rmw'
     devices:
-      - /dev/dri/renderD129
-      - /dev/dri/card1
+      {{#if isSingleCard}}
+      - {{wolfRenderNode}}
+      {{else}}
+      - /dev/dri
+      {{/if}}
       - /dev/uinput
     network_mode: host
     restart: unless-stopped
@@ -239,11 +269,21 @@ services:
             advancedOptions.style.display = document.getElementById('advancedSetup').checked ? 'block' : 'none';
         }
 
+        function toggleCardSetup() {
+            const singleCardOptions = document.getElementById('singleCardOptions');
+            const dualCardOptions = document.getElementById('dualCardOptions');
+            const isSingleCard = document.querySelector('input[name="cardSetup"]:checked').value === 'single';
+            
+            singleCardOptions.style.display = isSingleCard ? 'block' : 'none';
+            dualCardOptions.style.display = isSingleCard ? 'none' : 'block';
+        }
+
         function generateConfig() {
             const form = document.getElementById('configForm');
             const templateSource = document.getElementById('config-template').innerHTML;
             const template = Handlebars.compile(templateSource);
 
+            const isSingleCard = form.cardSetup.value === 'single';
             const context = {
                 xdgRuntimeDir: form.xdgRuntimeDir.value,
                 hostAppsStateFolder: form.hostAppsStateFolder.value,
@@ -251,10 +291,12 @@ services:
                 wolfPrivateKeyFile: form.wolfPrivateKeyFile.value,
                 wolfPrivateCertFile: form.wolfPrivateCertFile.value,
                 wolfLogLevel: form.wolfLogLevel.value,
-                hasNvidia: form.gpuType.value === 'nvidia',
+                isSingleCard: isSingleCard,
+                hasNvidia: isSingleCard ? form.singleGpuType.value === 'nvidia' : 
+                           (form.renderGpuType.value === 'nvidia' || form.encoderGpuType.value === 'nvidia'),
                 advancedSetup: form.advancedSetup.checked,
-                wolfRenderNode: form.wolfRenderNode.value,
-                wolfEncoderNode: form.wolfEncoderNode.value
+                wolfRenderNode: isSingleCard ? form.singleCardPath.value : '/dev/dri',
+                wolfEncoderNode: isSingleCard ? form.singleCardPath.value : '/dev/dri'
             };
 
             const generatedConfig = template(context);
@@ -292,12 +334,21 @@ services:
                 document.getElementById('wolfLogLevel').value = environment.WOLF_LOG_LEVEL || '';
 
                 const hasNvidia = environment.NVIDIA_DRIVER_CAPABILITIES && environment.NVIDIA_VISIBLE_DEVICES;
-                document.querySelector('input[name="gpuType"][value="' + (hasNvidia ? 'nvidia' : 'intel_amd') + '"]').checked = true;
+                const isSingleCard = environment.WOLF_RENDER_NODE === environment.WOLF_ENCODER_NODE;
+
+                if (isSingleCard) {
+                    document.querySelector('input[name="cardSetup"][value="single"]').checked = true;
+                    document.querySelector('input[name="singleGpuType"][value="' + (hasNvidia ? 'nvidia' : 'intel_amd') + '"]').checked = true;
+                    document.getElementById('singleCardPath').value = environment.WOLF_RENDER_NODE || '/dev/dri/renderD128';
+                } else {
+                    document.querySelector('input[name="cardSetup"][value="dual"]').checked = true;
+                    document.querySelector('input[name="renderGpuType"][value="' + (hasNvidia ? 'nvidia' : 'intel_amd') + '"]').checked = true;
+                    document.querySelector('input[name="encoderGpuType"][value="' + (hasNvidia ? 'nvidia' : 'intel_amd') + '"]').checked = true;
+                }
+
+                toggleCardSetup();
 
                 document.getElementById('advancedSetup').checked = true;
-                document.getElementById('wolfRenderNode').value = environment.WOLF_RENDER_NODE || '';
-                document.getElementById('wolfEncoderNode').value = environment.WOLF_ENCODER_NODE || '';
-
                 toggleAdvancedOptions();
 
                 closeImportModal();
@@ -314,6 +365,9 @@ services:
                 closeImportModal();
             }
         }
+
+        // Initialize the card setup options on page load
+        document.addEventListener('DOMContentLoaded', toggleCardSetup);
     </script>
 </body>
 </html>
