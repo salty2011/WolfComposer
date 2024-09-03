@@ -527,7 +527,7 @@ services:
                 wolfCfgFile: form.useCustomWolfCfgFile.checked ? form.wolfCfgFile.value : '/wolf_config/cfg/config.toml',
                 wolfPrivateKeyFile: form.useCustomWolfPrivateKeyFile.checked ? form.wolfPrivateKeyFile.value : '/wolf_config/cfg/key.pem',
                 wolfPrivateCertFile: form.useCustomWolfPrivateCertFile.checked ? form.wolfPrivateCertFile.value : '/wolf_config/cfg/cert.pem',
-                useWolfStopContainerOnExit: form.useCustomWolfStopContainerOnExit.checked,
+                useWolfStopContainerOnExit: form.useWolfStopContainerOnExit.checked,
                 wolfStopContainerOnExit: form.wolfStopContainerOnExit.checked,
                 useCustomWolfDockerFakeUdevPath: form.useCustomWolfDockerFakeUdevPath.checked,
                 wolfDockerFakeUdevPath: form.wolfDockerFakeUdevPath.value,
@@ -541,8 +541,10 @@ services:
                 useCustomRustBacktrace: form.useCustomRustBacktrace.checked,
                 rustBacktrace: form.rustBacktrace.value,
                 isSingleCard: isSingleCard,
-                hasNvidia: isSingleCard ? form.singleGpuType.value === 'nvidia' : 
-                           (form.renderGpuType.value === 'nvidia' || form.encoderGpuType.value === 'nvidia'),
+                hasNvidia: isSingleCard ? 
+                    form.querySelector('input[name="singleGpuType"]:checked').value === 'nvidia' : 
+                    (form.querySelector('input[name="renderGpuType"]:checked').value === 'nvidia' || 
+                     form.querySelector('input[name="encoderGpuType"]:checked').value === 'nvidia'),
                 wolfRenderNode: isSingleCard ? '/dev/dri' : `/dev/dri/${form.renderNodePath.value}`,
                 wolfEncoderNode: isSingleCard ? '/dev/dri' : `/dev/dri/${form.encoderNodePath.value}`
             };
