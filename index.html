@@ -460,7 +460,7 @@ services:
     device_cgroup_rules:
       - 'c 13:* rmw'
     devices:
-      - {{wolfRenderNode}}
+      - /dev/dri
       - /dev/uinput
     network_mode: host
     restart: unless-stopped
@@ -541,8 +541,8 @@ services:
                     form.querySelector('input[name="singleGpuType"]:checked').value === 'nvidia' : 
                     (form.querySelector('input[name="renderGpuType"]:checked').value === 'nvidia' || 
                      form.querySelector('input[name="encoderGpuType"]:checked').value === 'nvidia'),
-                wolfRenderNode: isSingleCard ? '/dev/dri' : `/dev/dri/${form.renderNodePath.value}`,
-                wolfEncoderNode: isSingleCard ? '/dev/dri' : `/dev/dri/${form.encoderNodePath.value}`
+                wolfRenderNode: '/dev/dri',
+                wolfEncoderNode: '/dev/dri'
             };
 
             const generatedConfig = template(context);
