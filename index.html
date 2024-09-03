@@ -16,7 +16,7 @@
             padding: 20px;
             background-color: #f4f4f4;
         }
-        h1, h2 {
+        h1, h2, h3 {
             color: #2c3e50;
         }
         #configForm, #output-container {
@@ -31,7 +31,7 @@
             margin-bottom: 5px;
             font-weight: bold;
         }
-        input[type="text"], textarea, select {
+        input[type="text"], input[type="number"], textarea, select {
             width: 100%;
             padding: 8px;
             margin-bottom: 10px;
@@ -39,7 +39,7 @@
             border-radius: 4px;
             box-sizing: border-box;
         }
-        input[type="checkbox"] {
+        input[type="checkbox"], input[type="radio"] {
             margin-right: 5px;
         }
         button {
@@ -104,7 +104,27 @@
             cursor: pointer;
         }
         .section {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .subsection {
+            margin-top: 15px;
+            padding-left: 20px;
+            border-left: 3px solid #3498db;
+        }
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        .radio-group label {
+            font-weight: normal;
+        }
+        .hidden {
+            display: none;
         }
     </style>
 </head>
@@ -127,44 +147,56 @@
         
         <div class="section">
             <h3>1. Graphics Card Setup</h3>
-            <label>
-                <input type="radio" name="cardSetup" value="single" checked onchange="toggleCardSetup()"> Single Card
-            </label>
-            <label>
-                <input type="radio" name="cardSetup" value="dual" onchange="toggleCardSetup()"> Dual Card
-            </label>
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="cardSetup" value="single" checked onchange="toggleCardSetup()"> Single Card
+                </label>
+                <label>
+                    <input type="radio" name="cardSetup" value="dual" onchange="toggleCardSetup()"> Dual Card
+                </label>
+            </div>
             
-            <div id="singleCardOptions">
+            <div id="singleCardOptions" class="subsection">
                 <h4>Card Type:</h4>
-                <label>
-                    <input type="radio" name="singleGpuType" value="intel_amd" checked> Intel/AMD
-                </label>
-                <label>
-                    <input type="radio" name="singleGpuType" value="nvidia"> NVIDIA
-                </label>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="singleGpuType" value="intel_amd" checked> Intel/AMD
+                    </label>
+                    <label>
+                        <input type="radio" name="singleGpuType" value="nvidia"> NVIDIA
+                    </label>
+                </div>
                 <label for="singleCardPath">GPU Device Path:</label>
                 <input type="text" id="singleCardPath" name="singleCardPath" value="/dev/dri/renderD128">
             </div>
             
-            <div id="dualCardOptions" style="display: none;">
-                <h4>Render Card:</h4>
-                <label>
-                    <input type="radio" name="renderGpuType" value="intel_amd" checked> Intel/AMD
-                </label>
-                <label>
-                    <input type="radio" name="renderGpuType" value="nvidia"> NVIDIA
-                </label>
-                <label for="renderCardNumber">Render Card Number:</label>
-                <input type="number" id="renderCardNumber" name="renderCardNumber" min="0" max="9" value="8">
-                <h4>Encoder Card:</h4>
-                <label>
-                    <input type="radio" name="encoderGpuType" value="intel_amd" checked> Intel/AMD
-                </label>
-                <label>
-                    <input type="radio" name="encoderGpuType" value="nvidia"> NVIDIA
-                </label>
-                <label for="encoderCardNumber">Encoder Card Number:</label>
-                <input type="number" id="encoderCardNumber" name="encoderCardNumber" min="0" max="9" value="9">
+            <div id="dualCardOptions" class="subsection hidden">
+                <div class="subsection">
+                    <h4>Render Card:</h4>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="renderGpuType" value="intel_amd" checked> Intel/AMD
+                        </label>
+                        <label>
+                            <input type="radio" name="renderGpuType" value="nvidia"> NVIDIA
+                        </label>
+                    </div>
+                    <label for="renderCardNumber">Render Card Number:</label>
+                    <input type="number" id="renderCardNumber" name="renderCardNumber" min="0" max="9" value="8">
+                </div>
+                <div class="subsection">
+                    <h4>Encoder Card:</h4>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="encoderGpuType" value="intel_amd" checked> Intel/AMD
+                        </label>
+                        <label>
+                            <input type="radio" name="encoderGpuType" value="nvidia"> NVIDIA
+                        </label>
+                    </div>
+                    <label for="encoderCardNumber">Encoder Card Number:</label>
+                    <input type="number" id="encoderCardNumber" name="encoderCardNumber" min="0" max="9" value="9">
+                </div>
             </div>
         </div>
 
@@ -173,13 +205,15 @@
             <label for="hostWolfLocation">Host Wolf Location:</label>
             <input type="text" id="hostWolfLocation" name="hostWolfLocation" value="/mnt/cache/appdata/wolf3">
             
-            <label>
-                <input type="checkbox" id="useCustomAppsStateFolder" name="useCustomAppsStateFolder" onchange="toggleCustomAppsStateFolder()">
-                Use custom HOST_APPS_STATE_FOLDER
-            </label>
-            <div id="customAppsStateFolderInput" style="display: none;">
-                <label for="hostAppsStateFolder">Custom HOST_APPS_STATE_FOLDER:</label>
-                <input type="text" id="hostAppsStateFolder" name="hostAppsStateFolder" value="/mnt/cache/appdata/wolf_clients">
+            <div class="subsection">
+                <label>
+                    <input type="checkbox" id="useCustomAppsStateFolder" name="useCustomAppsStateFolder" onchange="toggleCustomAppsStateFolder()">
+                    Use custom HOST_APPS_STATE_FOLDER
+                </label>
+                <div id="customAppsStateFolderInput" class="hidden">
+                    <label for="hostAppsStateFolder">Custom HOST_APPS_STATE_FOLDER:</label>
+                    <input type="text" id="hostAppsStateFolder" name="hostAppsStateFolder" value="/mnt/cache/appdata/wolf_clients">
+                </div>
             </div>
         </div>
 
@@ -189,29 +223,30 @@
                 <input type="checkbox" id="advancedSetup" name="advancedSetup" onchange="toggleAdvancedOptions()">
                 Show Advanced Options
             </label>
-        </div>
+            <div id="advancedOptions" class="advanced-options hidden">
+                <div class="subsection">
+                    <label for="xdgRuntimeDir">XDG_RUNTIME_DIR:</label>
+                    <input type="text" id="xdgRuntimeDir" name="xdgRuntimeDir" value="/wolf_config/cfg/sockets">
 
-        <div id="advancedOptions" class="advanced-options">
-            <label for="xdgRuntimeDir">XDG_RUNTIME_DIR:</label>
-            <input type="text" id="xdgRuntimeDir" name="xdgRuntimeDir" value="/wolf_config/cfg/sockets">
+                    <label for="wolfCfgFile">WOLF_CFG_FILE:</label>
+                    <input type="text" id="wolfCfgFile" name="wolfCfgFile" value="/wolf_config/cfg/config.toml">
 
-            <label for="wolfCfgFile">WOLF_CFG_FILE:</label>
-            <input type="text" id="wolfCfgFile" name="wolfCfgFile" value="/wolf_config/cfg/config.toml">
+                    <label for="wolfPrivateKeyFile">WOLF_PRIVATE_KEY_FILE:</label>
+                    <input type="text" id="wolfPrivateKeyFile" name="wolfPrivateKeyFile" value="/wolf_config/cfg/key.pem">
 
-            <label for="wolfPrivateKeyFile">WOLF_PRIVATE_KEY_FILE:</label>
-            <input type="text" id="wolfPrivateKeyFile" name="wolfPrivateKeyFile" value="/wolf_config/cfg/key.pem">
+                    <label for="wolfPrivateCertFile">WOLF_PRIVATE_CERT_FILE:</label>
+                    <input type="text" id="wolfPrivateCertFile" name="wolfPrivateCertFile" value="/wolf_config/cfg/cert.pem">
 
-            <label for="wolfPrivateCertFile">WOLF_PRIVATE_CERT_FILE:</label>
-            <input type="text" id="wolfPrivateCertFile" name="wolfPrivateCertFile" value="/wolf_config/cfg/cert.pem">
+                    <label for="wolfLogLevel">WOLF_LOG_LEVEL:</label>
+                    <input type="text" id="wolfLogLevel" name="wolfLogLevel" value="DEBUG">
 
-            <label for="wolfLogLevel">WOLF_LOG_LEVEL:</label>
-            <input type="text" id="wolfLogLevel" name="wolfLogLevel" value="DEBUG">
+                    <label for="wolfRenderNode">WOLF_RENDER_NODE:</label>
+                    <input type="text" id="wolfRenderNode" name="wolfRenderNode" value="/dev/dri/renderD129">
 
-            <label for="wolfRenderNode">WOLF_RENDER_NODE:</label>
-            <input type="text" id="wolfRenderNode" name="wolfRenderNode" value="/dev/dri/renderD129">
-
-            <label for="wolfEncoderNode">WOLF_ENCODER_NODE:</label>
-            <input type="text" id="wolfEncoderNode" name="wolfEncoderNode" value="/dev/dri/renderD129">
+                    <label for="wolfEncoderNode">WOLF_ENCODER_NODE:</label>
+                    <input type="text" id="wolfEncoderNode" name="wolfEncoderNode" value="/dev/dri/renderD129">
+                </div>
+            </div>
         </div>
 
         <button type="button" onclick="generateConfig()">Generate Config</button>
@@ -282,7 +317,7 @@ services:
 
         function toggleAdvancedOptions() {
             const advancedOptions = document.getElementById('advancedOptions');
-            advancedOptions.style.display = document.getElementById('advancedSetup').checked ? 'block' : 'none';
+            advancedOptions.classList.toggle('hidden', !document.getElementById('advancedSetup').checked);
         }
 
         function toggleCardSetup() {
@@ -290,13 +325,13 @@ services:
             const dualCardOptions = document.getElementById('dualCardOptions');
             const isSingleCard = document.querySelector('input[name="cardSetup"]:checked').value === 'single';
             
-            singleCardOptions.style.display = isSingleCard ? 'block' : 'none';
-            dualCardOptions.style.display = isSingleCard ? 'none' : 'block';
+            singleCardOptions.classList.toggle('hidden', !isSingleCard);
+            dualCardOptions.classList.toggle('hidden', isSingleCard);
         }
 
         function toggleCustomAppsStateFolder() {
             const customAppsStateFolderInput = document.getElementById('customAppsStateFolderInput');
-            customAppsStateFolderInput.style.display = document.getElementById('useCustomAppsStateFolder').checked ? 'block' : 'none';
+            customAppsStateFolderInput.classList.toggle('hidden', !document.getElementById('useCustomAppsStateFolder').checked);
         }
 
         function generateConfig() {
@@ -375,7 +410,7 @@ services:
                 if (isSingleCard) {
                     document.querySelector('input[name="cardSetup"][value="single"]').checked = true;
                     document.querySelector('input[name="singleGpuType"][value="' + (hasNvidia ? 'nvidia' : 'intel_amd') + '"]').checked = true;
-                    document.getElementById('singleCardPath').value = environment.WOLF_RENDER_NODE || '/dev/dri/renderD128';
+                    document.getElementByI('singleCardPath').value = environment.WOLF_RENDER_NODE || '/dev/dri/renderD128';
                 } else {
                     document.querySelector('input[name="cardSetup"][value="dual"]').checked = true;
                     document.querySelector('input[name="renderGpuType"][value="' + (hasNvidia ? 'nvidia' : 'intel_amd') + '"]').checked = true;
