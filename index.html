@@ -59,7 +59,7 @@
         button:hover {
             background-color: #2980b9;
         }
-        #output, #prerequisites pre code {
+        #output {
             background-color: #f8f8f8;
             color: #333;
             border: 1px solid #ddd;
@@ -70,9 +70,27 @@
             font-family: monospace;
         }
         #prerequisites pre {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        #prerequisites pre code {
+            display: block;
             background-color: transparent;
+            border: none;
             padding: 0;
-            margin: 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        #prerequisites ol, #prerequisites ul {
+            padding-left: 30px;
+        }
+        #prerequisites li {
+            margin-bottom: 10px;
         }
         .advanced-options {
             border-top: 1px solid #ddd;
@@ -561,25 +579,30 @@ services:
                 instructions += `
                 <p>For NVIDIA GPU setup:</p>
                 <ol>
-                    <li>Confirm the modeset by running:
+                    <li>
+                        <p>Confirm the modeset by running:</p>
                         <pre><code class="language-bash">sudo cat /sys/module/nvidia_drm/parameters/modeset</code></pre>
                     </li>
-                    <li>If the output is 'N', perform the following steps:
+                    <li>
+                        <p>If the output is 'N', perform the following steps:</p>
                         <ol>
-                            <li>Edit the GRUB configuration:
+                            <li>
+                                <p>Edit the GRUB configuration:</p>
                                 <pre><code class="language-bash">sudo nano /etc/default/grub</code></pre>
                             </li>
-                            <li>Find the line starting with <code>GRUB_CMDLINE_LINUX_DEFAULT</code> and add <code>nvidia-drm.modeset=1</code> to it. For example:
+                            <li>
+                                <p>Find the line starting with <code>GRUB_CMDLINE_LINUX_DEFAULT</code> and add <code>nvidia-drm.modeset=1</code> to it. For example:</p>
                                 <pre><code class="language-bash">GRUB_CMDLINE_LINUX_DEFAULT="quiet nvidia-drm.modeset=1"</code></pre>
                             </li>
-                            <li>Save the file and exit the editor.</li>
-                            <li>Update GRUB:
+                            <li><p>Save the file and exit the editor.</p></li>
+                            <li>
+                                <p>Update GRUB:</p>
                                 <pre><code class="language-bash">sudo update-grub</code></pre>
                             </li>
-                            <li>Reboot your system for the changes to take effect.</li>
+                            <li><p>Reboot your system for the changes to take effect.</p></li>
                         </ol>
                     </li>
-                    <li>If the output is 'Y', proceed to the next step.</li>
+                    <li><p>If the output is 'Y', proceed to the next step.</p></li>
                 </ol>`;
             }
 
@@ -591,11 +614,13 @@ services:
             <pre><code class="language-bash">/var/run/docker.sock</code></pre>
             <p>Create and run the Docker Compose file:</p>
             <ol>
-                <li>Create a new file named <code>docker-compose.yml</code> in your desired directory:
+                <li>
+                    <p>Create a new file named <code>docker-compose.yml</code> in your desired directory:</p>
                     <pre><code class="language-bash">nano docker-compose.yml</code></pre>
                 </li>
-                <li>Paste the generated configuration into this file and save it.</li>
-                <li>Run the Docker Compose command:
+                <li><p>Paste the generated configuration into this file and save it.</p></li>
+                <li>
+                    <p>Run the Docker Compose command:</p>
                     <pre><code class="language-bash">docker compose up -d</code></pre>
                 </li>
             </ol>`;
