@@ -561,17 +561,21 @@ services:
                 instructions += `
                 <p>For NVIDIA GPU setup:</p>
                 <ol>
-                    <li>Confirm the modeset by running:</li>
-                    <pre><code class="language-bash">sudo cat /sys/module/nvidia_drm/parameters/modeset</code></pre>
+                    <li>Confirm the modeset by running:
+                        <pre><code class="language-bash">sudo cat /sys/module/nvidia_drm/parameters/modeset</code></pre>
+                    </li>
                     <li>If the output is 'N', perform the following steps:
                         <ol>
-                            <li>Edit the GRUB configuration:</li>
-                            <pre><code class="language-bash">sudo nano /etc/default/grub</code></pre>
-                            <li>Find the line starting with <code>GRUB_CMDLINE_LINUX_DEFAULT</code> and add <code>nvidia-drm.modeset=1</code> to it. For example:</li>
-                            <pre><code class="language-bash">GRUB_CMDLINE_LINUX_DEFAULT="quiet nvidia-drm.modeset=1"</code></pre>
+                            <li>Edit the GRUB configuration:
+                                <pre><code class="language-bash">sudo nano /etc/default/grub</code></pre>
+                            </li>
+                            <li>Find the line starting with <code>GRUB_CMDLINE_LINUX_DEFAULT</code> and add <code>nvidia-drm.modeset=1</code> to it. For example:
+                                <pre><code class="language-bash">GRUB_CMDLINE_LINUX_DEFAULT="quiet nvidia-drm.modeset=1"</code></pre>
+                            </li>
                             <li>Save the file and exit the editor.</li>
-                            <li>Update GRUB:</li>
-                            <pre><code class="language-bash">sudo update-grub</code></pre>
+                            <li>Update GRUB:
+                                <pre><code class="language-bash">sudo update-grub</code></pre>
+                            </li>
                             <li>Reboot your system for the changes to take effect.</li>
                         </ol>
                     </li>
@@ -587,11 +591,13 @@ services:
             <pre><code class="language-bash">/var/run/docker.sock</code></pre>
             <p>Create and run the Docker Compose file:</p>
             <ol>
-                <li>Create a new file named <code>docker-compose.yml</code> in your desired directory:</li>
-                <pre><code class="language-bash">nano docker-compose.yml</code></pre>
+                <li>Create a new file named <code>docker-compose.yml</code> in your desired directory:
+                    <pre><code class="language-bash">nano docker-compose.yml</code></pre>
+                </li>
                 <li>Paste the generated configuration into this file and save it.</li>
-                <li>Run the Docker Compose command:</li>
-                <pre><code class="language-bash">docker compose up -d</code></pre>
+                <li>Run the Docker Compose command:
+                    <pre><code class="language-bash">docker compose up -d</code></pre>
+                </li>
             </ol>`;
 
             return instructions;
