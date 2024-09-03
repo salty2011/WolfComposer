@@ -248,37 +248,40 @@
             <input type="text" id="hostWolfLocation" name="hostWolfLocation" value="/wolf_host">
             
             <div class="subsection">
-                <h4>Advanced Configuration</h4>
-                <div id="advancedOptions">
-                    <label>
-                        <input type="checkbox" id="useCustomAppsStateFolder" name="useCustomAppsStateFolder" onchange="toggleCustomAppsStateFolder()">
-                        Use custom folder for application state (advanced)
-                    </label>
-                    <div id="customAppsStateFolderInput" class="hidden">
-                        <label for="hostAppsStateFolder">Custom application state folder:</label>
-                        <input type="text" id="hostAppsStateFolder" name="hostAppsStateFolder" value="/mnt/cache/appdata/wolf_clients">
-                    </div>
-
-                    <label for="xdgRuntimeDir">XDG_RUNTIME_DIR:</label>
-                    <input type="text" id="xdgRuntimeDir" name="xdgRuntimeDir" value="/wolf_config/cfg/sockets">
-
-                    <label for="wolfCfgFile">WOLF_CFG_FILE:</label>
-                    <input type="text" id="wolfCfgFile" name="wolfCfgFile" value="/wolf_config/cfg/config.toml">
-
-                    <label for="wolfPrivateKeyFile">WOLF_PRIVATE_KEY_FILE:</label>
-                    <input type="text" id="wolfPrivateKeyFile" name="wolfPrivateKeyFile" value="/wolf_config/cfg/key.pem">
-
-                    <label for="wolfPrivateCertFile">WOLF_PRIVATE_CERT_FILE:</label>
-                    <input type="text" id="wolfPrivateCertFile" name="wolfPrivateCertFile" value="/wolf_config/cfg/cert.pem">
-
-                    <label for="wolfLogLevel">WOLF_LOG_LEVEL:</label>
-                    <input type="text" id="wolfLogLevel" name="wolfLogLevel" value="DEBUG">
-
-                    <label for="wolfRenderNode">WOLF_RENDER_NODE:</label>
-                    <input type="text" id="wolfRenderNode" name="wolfRenderNode" value="/dev/dri/renderD129">
-
-                    <label for="wolfEncoderNode">WOLF_ENCODER_NODE:</label>
-                    <input type="text" id="wolfEncoderNode" name="wolfEncoderNode" value="/dev/dri/renderD129">
+                <h4 onclick="toggleAdvancedOptions()" style="cursor: pointer;">Advanced Configuration ▼</h4>
+                <div id="advancedOptions" style="display: none;">
+                    <table>
+                        <tr>
+                            <td><input type="checkbox" id="useCustomAppsStateFolder" onchange="toggleCustomAppsStateFolder()"></td>
+                            <td><label for="useCustomAppsStateFolder">Use custom folder for application state:</label></td>
+                            <td><input type="text" id="hostAppsStateFolder" value="/mnt/cache/appdata/wolf_clients" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" id="useCustomXdgRuntimeDir" onchange="toggleInput('useCustomXdgRuntimeDir', 'xdgRuntimeDir')"></td>
+                            <td><label for="useCustomXdgRuntimeDir">XDG_RUNTIME_DIR:</label></td>
+                            <td><input type="text" id="xdgRuntimeDir" value="/wolf_config/cfg/sockets" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" id="useCustomWolfCfgFile" onchange="toggleInput('useCustomWolfCfgFile', 'wolfCfgFile')"></td>
+                            <td><label for="useCustomWolfCfgFile">WOLF_CFG_FILE:</label></td>
+                            <td><input type="text" id="wolfCfgFile" value="/wolf_config/cfg/config.toml" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" id="useCustomWolfPrivateKeyFile" onchange="toggleInput('useCustomWolfPrivateKeyFile', 'wolfPrivateKeyFile')"></td>
+                            <td><label for="useCustomWolfPrivateKeyFile">WOLF_PRIVATE_KEY_FILE:</label></td>
+                            <td><input type="text" id="wolfPrivateKeyFile" value="/wolf_config/cfg/key.pem" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" id="useCustomWolfPrivateCertFile" onchange="toggleInput('useCustomWolfPrivateCertFile', 'wolfPrivateCertFile')"></td>
+                            <td><label for="useCustomWolfPrivateCertFile">WOLF_PRIVATE_CERT_FILE:</label></td>
+                            <td><input type="text" id="wolfPrivateCertFile" value="/wolf_config/cfg/cert.pem" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" id="useCustomWolfLogLevel" onchange="toggleInput('useCustomWolfLogLevel', 'wolfLogLevel')"></td>
+                            <td><label for="useCustomWolfLogLevel">WOLF_LOG_LEVEL:</label></td>
+                            <td><input type="text" id="wolfLogLevel" value="DEBUG" disabled></td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
@@ -358,9 +361,19 @@ services:
             dualCardOptions.style.display = isSingleCard ? 'none' : 'block';
         }
 
+        function toggleAdvancedOptions() {
+            const advancedOptions = document.getElementById('advancedOptions');
+            advancedOptions.style.display = advancedOptions.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleInput(checkboxId, inputId) {
+            const checkbox = document.getElementById(checkboxId);
+            const input = document.getElementById(inputId);
+            input.disabled = !checkbox.checked;
+        }
+
         function toggleCustomAppsStateFolder() {
-            const customAppsStateFolderInput = document.getElementById('customAppsStateFolderInput');
-            customAppsStateFolderInput.classList.toggle('hidden', !document.getElementById('useCustomAppsStateFolder').checked);
+            toggleInput('useCustomAppsStateFolder', 'hostAppsStateFolder');
         }
 
         function generateConfig() {
@@ -371,18 +384,17 @@ services:
             const isSingleCard = form.cardSetup.value === 'single';
             const useCustomAppsStateFolder = form.useCustomAppsStateFolder.checked;
             const context = {
-                xdgRuntimeDir: form.xdgRuntimeDir.value,
+                xdgRuntimeDir: form.useCustomXdgRuntimeDir.checked ? form.xdgRuntimeDir.value : '/wolf_config/cfg/sockets',
                 hostWolfLocation: form.hostWolfLocation.value,
                 useCustomAppsStateFolder: useCustomAppsStateFolder,
                 hostAppsStateFolder: useCustomAppsStateFolder ? form.hostAppsStateFolder.value : '/wolf_config/clients',
-                wolfCfgFile: form.wolfCfgFile.value,
-                wolfPrivateKeyFile: form.wolfPrivateKeyFile.value,
-                wolfPrivateCertFile: form.wolfPrivateCertFile.value,
-                wolfLogLevel: form.wolfLogLevel.value,
+                wolfCfgFile: form.useCustomWolfCfgFile.checked ? form.wolfCfgFile.value : '/wolf_config/cfg/config.toml',
+                wolfPrivateKeyFile: form.useCustomWolfPrivateKeyFile.checked ? form.wolfPrivateKeyFile.value : '/wolf_config/cfg/key.pem',
+                wolfPrivateCertFile: form.useCustomWolfPrivateCertFile.checked ? form.wolfPrivateCertFile.value : '/wolf_config/cfg/cert.pem',
+                wolfLogLevel: form.useCustomWolfLogLevel.checked ? form.wolfLogLevel.value : 'DEBUG',
                 isSingleCard: isSingleCard,
                 hasNvidia: isSingleCard ? form.singleGpuType.value === 'nvidia' : 
                            (form.renderGpuType.value === 'nvidia' || form.encoderGpuType.value === 'nvidia'),
-                advancedSetup: form.advancedSetup.checked,
                 wolfRenderNode: `/dev/dri/${isSingleCard ? form.singleCardPath.value : form.renderNodePath.value}`,
                 wolfEncoderNode: `/dev/dri/${isSingleCard ? form.singleCardPath.value : form.encoderNodePath.value}`
             };
@@ -422,6 +434,9 @@ services:
                 }, {});
 
                 document.getElementById('xdgRuntimeDir').value = environment.XDG_RUNTIME_DIR || '';
+                document.getElementById('useCustomXdgRuntimeDir').checked = environment.XDG_RUNTIME_DIR !== '/wolf_config/cfg/sockets';
+                toggleInput('useCustomXdgRuntimeDir', 'xdgRuntimeDir');
+
                 const hostWolfLocation = wolfService.volumes.find(v => v.includes(':/wolf_config:rw')).split(':')[0];
                 document.getElementById('hostWolfLocation').value = hostWolfLocation || '/mnt/cache/appdata/wolf3';
                 
@@ -429,16 +444,27 @@ services:
                 if (hostAppsStateFolder && hostAppsStateFolder !== '/wolf_config/clients') {
                     document.getElementById('useCustomAppsStateFolder').checked = true;
                     document.getElementById('hostAppsStateFolder').value = hostAppsStateFolder;
-                    toggleCustomAppsStateFolder();
                 } else {
                     document.getElementById('useCustomAppsStateFolder').checked = false;
                     document.getElementById('hostAppsStateFolder').value = '/mnt/cache/appdata/wolf_clients';
                 }
+                toggleCustomAppsStateFolder();
                 
                 document.getElementById('wolfCfgFile').value = environment.WOLF_CFG_FILE || '';
+                document.getElementById('useCustomWolfCfgFile').checked = environment.WOLF_CFG_FILE !== '/wolf_config/cfg/config.toml';
+                toggleInput('useCustomWolfCfgFile', 'wolfCfgFile');
+
                 document.getElementById('wolfPrivateKeyFile').value = environment.WOLF_PRIVATE_KEY_FILE || '';
+                document.getElementById('useCustomWolfPrivateKeyFile').checked = environment.WOLF_PRIVATE_KEY_FILE !== '/wolf_config/cfg/key.pem';
+                toggleInput('useCustomWolfPrivateKeyFile', 'wolfPrivateKeyFile');
+
                 document.getElementById('wolfPrivateCertFile').value = environment.WOLF_PRIVATE_CERT_FILE || '';
+                document.getElementById('useCustomWolfPrivateCertFile').checked = environment.WOLF_PRIVATE_CERT_FILE !== '/wolf_config/cfg/cert.pem';
+                toggleInput('useCustomWolfPrivateCertFile', 'wolfPrivateCertFile');
+
                 document.getElementById('wolfLogLevel').value = environment.WOLF_LOG_LEVEL || '';
+                document.getElementById('useCustomWolfLogLevel').checked = environment.WOLF_LOG_LEVEL !== 'DEBUG';
+                toggleInput('useCustomWolfLogLevel', 'wolfLogLevel');
 
                 const hasNvidia = environment.NVIDIA_DRIVER_CAPABILITIES && environment.NVIDIA_VISIBLE_DEVICES;
                 const isSingleCard = environment.WOLF_RENDER_NODE === environment.WOLF_ENCODER_NODE;
@@ -459,8 +485,6 @@ services:
                 }
 
                 toggleCardSetup();
-
-                document.getElementById('advancedSetup').checked = true;
                 toggleAdvancedOptions();
 
                 closeImportModal();
