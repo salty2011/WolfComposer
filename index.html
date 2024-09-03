@@ -113,7 +113,12 @@
         .subsection {
             margin-top: 15px;
             padding-left: 20px;
-            border-left: 3px solid #3498db;
+        }
+        .encoder-node {
+            background-color: #e6e6fa;
+        }
+        .render-node {
+            background-color: #e6ffe6;
         }
         .radio-group {
             display: flex;
@@ -180,22 +185,7 @@
             
             <div id="dualCardOptions" class="subsection hidden">
                 <div class="flex-container">
-                    <div class="subsection flex-item">
-                        <h4>Render Node:</h4>
-                        <div class="radio-group">
-                            <label>
-                                <input type="radio" name="renderGpuType" value="intel_amd" checked> Intel/AMD
-                            </label>
-                            <label>
-                                <input type="radio" name="renderGpuType" value="nvidia"> NVIDIA
-                            </label>
-                        </div>
-                        <label for="renderNodePath">Render Node Path:</label>
-                        <input type="text" id="renderNodePath" name="renderNodePath" value="/dev/dri/renderD12" readonly>
-                        <label for="renderNodeNumber">Render Node Number:</label>
-                        <input type="number" id="renderNodeNumber" name="renderNodeNumber" min="0" max="9" value="8">
-                    </div>
-                    <div class="subsection flex-item">
+                    <div class="subsection flex-item encoder-node">
                         <h4>Encoder Node:</h4>
                         <div class="radio-group">
                             <label>
@@ -206,9 +196,20 @@
                             </label>
                         </div>
                         <label for="encoderNodePath">Encoder Node Path:</label>
-                        <input type="text" id="encoderNodePath" name="encoderNodePath" value="/dev/dri/renderD12" readonly>
-                        <label for="encoderNodeNumber">Encoder Node Number:</label>
-                        <input type="number" id="encoderNodeNumber" name="encoderNodeNumber" min="0" max="9" value="9">
+                        <input type="text" id="encoderNodePath" name="encoderNodePath" value="renderD128" placeholder="e.g., renderD128">
+                    </div>
+                    <div class="subsection flex-item render-node">
+                        <h4>Render Node:</h4>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="renderGpuType" value="intel_amd" checked> Intel/AMD
+                            </label>
+                            <label>
+                                <input type="radio" name="renderGpuType" value="nvidia"> NVIDIA
+                            </label>
+                        </div>
+                        <label for="renderNodePath">Render Node Path:</label>
+                        <input type="text" id="renderNodePath" name="renderNodePath" value="renderD129" placeholder="e.g., renderD129">
                     </div>
                 </div>
             </div>
@@ -368,8 +369,8 @@ services:
                 hasNvidia: isSingleCard ? form.singleGpuType.value === 'nvidia' : 
                            (form.renderGpuType.value === 'nvidia' || form.encoderGpuType.value === 'nvidia'),
                 advancedSetup: form.advancedSetup.checked,
-                wolfRenderNode: isSingleCard ? form.singleCardPath.value : `${form.renderNodePath.value}${form.renderNodeNumber.value}`,
-                wolfEncoderNode: isSingleCard ? form.singleCardPath.value : `${form.encoderNodePath.value}${form.encoderNodeNumber.value}`
+                wolfRenderNode: isSingleCard ? form.singleCardPath.value : `/dev/dri/${form.renderNodePath.value}`,
+                wolfEncoderNode: isSingleCard ? form.singleCardPath.value : `/dev/dri/${form.encoderNodePath.value}`
             };
 
             const generatedConfig = template(context);
@@ -430,14 +431,10 @@ services:
                     document.querySelector('input[name="renderGpuType"][value="' + (hasNvidia ? 'nvidia' : 'intel_amd') + '"]').checked = true;
                     document.querySelector('input[name="encoderGpuType"][value="' + (hasNvidia ? 'nvidia' : 'intel_amd') + '"]').checked = true;
                     
-                    const renderNodePath = environment.WOLF_RENDER_NODE ? environment.WOLF_RENDER_NODE.slice(0, -1) : '/dev/dri/renderD12';
-                    const encoderNodePath = environment.WOLF_ENCODER_NODE ? environment.WOLF_ENCODER_NODE.slice(0, -1) : '/dev/dri/renderD12';
-                    const renderNodeNumber = environment.WOLF_RENDER_NODE ? environment.WOLF_RENDER_NODE.slice(-1) : '8';
-                    const encoderNodeNumber = environment.WOLF_ENCODER_NODE ? environment.WOLF_ENCODER_NODE.slice(-1) : '9';
+                    const renderNodePath = environment.WOLF_RENDER_NODE ? environment.WOLF_RENDER_NODE.split('/').pop() : 'renderD129';
+                    const encoderNodePath = environment.WOLF_ENCODER_NODE ? environment.WOLF_ENCODER_NODE.split('/').pop() : 'renderD128';
                     document.getElementById('renderNodePath').value = renderNodePath;
                     document.getElementById('encoderNodePath').value = encoderNodePath;
-                    document.getElementById('renderNodeNumber').value = renderNodeNumber;
-                    document.getElementById('encoderNodeNumber').value = encoderNodeNumber;
                 }
 
                 toggleCardSetup();
