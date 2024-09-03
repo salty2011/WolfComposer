@@ -392,6 +392,8 @@
     </form>
 
     <div id="output-container" style="display: none;">
+        <h2>Pre-requisite Instructions</h2>
+        <div id="prerequisites"></div>
         <h2>Generated Config</h2>
         <button onclick="copyToClipboard()">Copy to Clipboard</button>
         <pre id="output"></pre>
@@ -538,7 +540,49 @@ services:
 
             const generatedConfig = template(context);
             document.getElementById('output').textContent = generatedConfig;
+            
+            // Generate pre-requisite instructions
+            const prerequisites = generatePrerequisites(context);
+            document.getElementById('prerequisites').innerHTML = prerequisites;
+            
             document.getElementById('output-container').style.display = 'block';
+        }
+
+        function generatePrerequisites(context) {
+            let instructions = '';
+
+            if (context.hasNvidia) {
+                instructions += `
+                <p>For NVIDIA GPU setup:</p>
+                <ol>
+                    <li>Confirm the modeset by running:</li>
+                    <pre><code>sudo cat /sys/module/nvidia_drm/parameters/modeset</code></pre>
+                    <li>If the output is 'N', edit the GRUB configuration:</li>
+                    <pre><code>sudo nano /etc/default/grub</code></pre>
+                    <li>Find the line starting with <code>GRUB_CMDLINE_LINUX_DEFAULT</code> and add <code>nvidia-drm.modeset=1</code> to it. For example:</li>
+                    <pre><code>GRUB_CMDLINE_LINUX_DEFAULT="quiet nvidia-drm.modeset=1"</code></pre>
+                    <li>Save the file and exit the editor.</li>
+                    <li>Update GRUB:</li>
+                    <pre><code>sudo update-grub</code></pre>
+                    <li>Reboot your system for the changes to take effect.</li>
+                </ol>`;
+            }
+
+            instructions += `
+            <p>Ensure proper permissions:</p>
+            <ul>
+                <li>All host paths used in the configuration require the permissions that the container is running as.</li>
+            </ul>
+            <p>Create and run the Docker Compose file:</p>
+            <ol>
+                <li>Create a new file named <code>docker-compose.yml</code> in your desired directory:</li>
+                <pre><code>nano docker-compose.yml</code></pre>
+                <li>Paste the generated configuration into this file and save it.</li>
+                <li>Run the Docker Compose command:</li>
+                <pre><code>docker compose up -d</code></pre>
+            </ol>`;
+
+            return instructions;
         }
 
         // Initialize the form with default values
