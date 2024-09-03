@@ -279,7 +279,7 @@
                             <label for="useCustomAppsStateFolder">Custom Application State Folder</label>
                             <small><strong>HOST_APPS_STATE_FOLDER</strong></small>
                         </div>
-                        <input type="text" id="hostAppsStateFolder" value="/mnt/cache/appdata/wolf_clients" disabled>
+                        <input type="text" id="hostAppsStateFolder" value="/mnt/games/wolf_clients" disabled>
                     </div>
                     <div class="option-row">
                         <input type="checkbox" id="useCustomXdgRuntimeDir" onchange="toggleInput('useCustomXdgRuntimeDir', 'xdgRuntimeDir')">
@@ -583,7 +583,7 @@ services:
                     document.getElementById('hostAppsStateFolder').value = hostAppsStateFolder;
                 } else {
                     document.getElementById('useCustomAppsStateFolder').checked = false;
-                    document.getElementById('hostAppsStateFolder').value = '/mnt/cache/appdata/wolf_clients';
+                    document.getElementById('hostAppsStateFolder').value = '/mnt/games/wolf_clients';
                 }
                 toggleCustomAppsStateFolder();
                 
