@@ -158,6 +158,29 @@
             padding: 15px;
             border-radius: 8px;
         }
+        .option-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .option-row input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .option-label {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .option-label label {
+            margin-bottom: 2px;
+        }
+        .option-label small {
+            color: #666;
+        }
+        .option-row input[type="text"],
+        .option-row select {
+            width: 250px;
+        }
     </style>
 </head>
 <body>
@@ -250,80 +273,78 @@
             <div class="subsection">
                 <h4 onclick="toggleAdvancedOptions()" style="cursor: pointer;">Advanced Configuration ▼</h4>
                 <div id="advancedOptions" style="display: none;">
-                    <table>
-                        <tr>
-                            <td><input type="checkbox" id="useCustomAppsStateFolder" onchange="toggleCustomAppsStateFolder()"></td>
-                            <td>
-                                <label for="useCustomAppsStateFolder">Custom Application State Folder</label><br>
-                                <small><strong>HOST_APPS_STATE_FOLDER</strong></small>
-                            </td>
-                            <td><input type="text" id="hostAppsStateFolder" value="/mnt/cache/appdata/wolf_clients" disabled></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" id="useCustomXdgRuntimeDir" onchange="toggleInput('useCustomXdgRuntimeDir', 'xdgRuntimeDir')"></td>
-                            <td>
-                                <label for="useCustomXdgRuntimeDir">Runtime Directory</label><br>
-                                <small><strong>XDG_RUNTIME_DIR</strong></small>
-                            </td>
-                            <td><input type="text" id="xdgRuntimeDir" value="/wolf_config/cfg/sockets" disabled></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" id="useCustomWolfCfgFile" onchange="toggleInput('useCustomWolfCfgFile', 'wolfCfgFile')"></td>
-                            <td>
-                                <label for="useCustomWolfCfgFile">Wolf Configuration File</label><br>
-                                <small><strong>WOLF_CFG_FILE</strong></small>
-                            </td>
-                            <td><input type="text" id="wolfCfgFile" value="/wolf_config/cfg/config.toml" disabled></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" id="useCustomWolfPrivateKeyFile" onchange="toggleInput('useCustomWolfPrivateKeyFile', 'wolfPrivateKeyFile')"></td>
-                            <td>
-                                <label for="useCustomWolfPrivateKeyFile">Private Key File</label><br>
-                                <small><strong>WOLF_PRIVATE_KEY_FILE</strong></small>
-                            </td>
-                            <td><input type="text" id="wolfPrivateKeyFile" value="/wolf_config/cfg/key.pem" disabled></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" id="useCustomWolfPrivateCertFile" onchange="toggleInput('useCustomWolfPrivateCertFile', 'wolfPrivateCertFile')"></td>
-                            <td>
-                                <label for="useCustomWolfPrivateCertFile">Private Certificate File</label><br>
-                                <small><strong>WOLF_PRIVATE_CERT_FILE</strong></small>
-                            </td>
-                            <td><input type="text" id="wolfPrivateCertFile" value="/wolf_config/cfg/cert.pem" disabled></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" id="useWolfStopContainerOnExit" onchange="toggleInput('useWolfStopContainerOnExit', 'wolfStopContainerOnExit')"></td>
-                            <td>
-                                <label for="useWolfStopContainerOnExit">Stop Container on Exit</label><br>
-                                <small><strong>WOLF_STOP_CONTAINER_ON_EXIT</strong></small>
-                            </td>
-                            <td><input type="checkbox" id="wolfStopContainerOnExit" checked disabled></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" id="useCustomWolfDockerFakeUdevPath" onchange="toggleInput('useCustomWolfDockerFakeUdevPath', 'wolfDockerFakeUdevPath')"></td>
-                            <td>
-                                <label for="useCustomWolfDockerFakeUdevPath">Fake udev Path</label><br>
-                                <small><strong>WOLF_DOCKER_FAKE_UDEV_PATH</strong></small>
-                            </td>
-                            <td><input type="text" id="wolfDockerFakeUdevPath" value="/wolf_config/cfg/fake-udev" disabled></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" id="useCustomWolfDockerSocket" onchange="toggleInput('useCustomWolfDockerSocket', 'wolfDockerSocket')"></td>
-                            <td>
-                                <label for="useCustomWolfDockerSocket">Docker Socket Path</label><br>
-                                <small><strong>WOLF_DOCKER_SOCKET</strong></small>
-                            </td>
-                            <td><input type="text" id="wolfDockerSocket" value="/var/run/docker.sock" disabled></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" id="useCustomWolfPulseImage" onchange="toggleInput('useCustomWolfPulseImage', 'wolfPulseImage')"></td>
-                            <td>
-                                <label for="useCustomWolfPulseImage">PulseAudio Image</label><br>
-                                <small><strong>WOLF_PULSE_IMAGE</strong></small>
-                            </td>
-                            <td><input type="text" id="wolfPulseImage" value="ghcr.io/games-on-whales/pulseaudio:master" disabled></td>
-                        </tr>
-                    </table>
+                    <div class="option-row">
+                        <input type="checkbox" id="useCustomAppsStateFolder" onchange="toggleCustomAppsStateFolder()">
+                        <div class="option-label">
+                            <label for="useCustomAppsStateFolder">Custom Application State Folder</label>
+                            <small><strong>HOST_APPS_STATE_FOLDER</strong></small>
+                        </div>
+                        <input type="text" id="hostAppsStateFolder" value="/mnt/cache/appdata/wolf_clients" disabled>
+                    </div>
+                    <div class="option-row">
+                        <input type="checkbox" id="useCustomXdgRuntimeDir" onchange="toggleInput('useCustomXdgRuntimeDir', 'xdgRuntimeDir')">
+                        <div class="option-label">
+                            <label for="useCustomXdgRuntimeDir">Runtime Directory</label>
+                            <small><strong>XDG_RUNTIME_DIR</strong></small>
+                        </div>
+                        <input type="text" id="xdgRuntimeDir" value="/wolf_config/cfg/sockets" disabled>
+                    </div>
+                    <div class="option-row">
+                        <input type="checkbox" id="useCustomWolfCfgFile" onchange="toggleInput('useCustomWolfCfgFile', 'wolfCfgFile')">
+                        <div class="option-label">
+                            <label for="useCustomWolfCfgFile">Wolf Configuration File</label>
+                            <small><strong>WOLF_CFG_FILE</strong></small>
+                        </div>
+                        <input type="text" id="wolfCfgFile" value="/wolf_config/cfg/config.toml" disabled>
+                    </div>
+                    <div class="option-row">
+                        <input type="checkbox" id="useCustomWolfPrivateKeyFile" onchange="toggleInput('useCustomWolfPrivateKeyFile', 'wolfPrivateKeyFile')">
+                        <div class="option-label">
+                            <label for="useCustomWolfPrivateKeyFile">Private Key File</label>
+                            <small><strong>WOLF_PRIVATE_KEY_FILE</strong></small>
+                        </div>
+                        <input type="text" id="wolfPrivateKeyFile" value="/wolf_config/cfg/key.pem" disabled>
+                    </div>
+                    <div class="option-row">
+                        <input type="checkbox" id="useCustomWolfPrivateCertFile" onchange="toggleInput('useCustomWolfPrivateCertFile', 'wolfPrivateCertFile')">
+                        <div class="option-label">
+                            <label for="useCustomWolfPrivateCertFile">Private Certificate File</label>
+                            <small><strong>WOLF_PRIVATE_CERT_FILE</strong></small>
+                        </div>
+                        <input type="text" id="wolfPrivateCertFile" value="/wolf_config/cfg/cert.pem" disabled>
+                    </div>
+                    <div class="option-row">
+                        <input type="checkbox" id="useWolfStopContainerOnExit" onchange="toggleInput('useWolfStopContainerOnExit', 'wolfStopContainerOnExit')">
+                        <div class="option-label">
+                            <label for="useWolfStopContainerOnExit">Stop Container on Exit</label>
+                            <small><strong>WOLF_STOP_CONTAINER_ON_EXIT</strong></small>
+                        </div>
+                        <input type="checkbox" id="wolfStopContainerOnExit" checked disabled>
+                    </div>
+                    <div class="option-row">
+                        <input type="checkbox" id="useCustomWolfDockerFakeUdevPath" onchange="toggleInput('useCustomWolfDockerFakeUdevPath', 'wolfDockerFakeUdevPath')">
+                        <div class="option-label">
+                            <label for="useCustomWolfDockerFakeUdevPath">Fake udev Path</label>
+                            <small><strong>WOLF_DOCKER_FAKE_UDEV_PATH</strong></small>
+                        </div>
+                        <input type="text" id="wolfDockerFakeUdevPath" value="/wolf_config/cfg/fake-udev" disabled>
+                    </div>
+                    <div class="option-row">
+                        <input type="checkbox" id="useCustomWolfDockerSocket" onchange="toggleInput('useCustomWolfDockerSocket', 'wolfDockerSocket')">
+                        <div class="option-label">
+                            <label for="useCustomWolfDockerSocket">Docker Socket Path</label>
+                            <small><strong>WOLF_DOCKER_SOCKET</strong></small>
+                        </div>
+                        <input type="text" id="wolfDockerSocket" value="/var/run/docker.sock" disabled>
+                    </div>
+                    <div class="option-row">
+                        <input type="checkbox" id="useCustomWolfPulseImage" onchange="toggleInput('useCustomWolfPulseImage', 'wolfPulseImage')">
+                        <div class="option-label">
+                            <label for="useCustomWolfPulseImage">PulseAudio Image</label>
+                            <small><strong>WOLF_PULSE_IMAGE</strong></small>
+                        </div>
+                        <input type="text" id="wolfPulseImage" value="ghcr.io/games-on-whales/pulseaudio:master" disabled>
+                    </div>
                 </div>
             </div>
         </div>
@@ -333,40 +354,36 @@
             <div class="subsection">
                 <h4 onclick="toggleDebugOptions()" style="cursor: pointer;">Debug Options ▼</h4>
                 <div id="debugOptions" style="display: none;">
-                    <table>
-                        <tr>
-                            <td><input type="checkbox" id="useCustomWolfLogLevel" onchange="toggleInput('useCustomWolfLogLevel', 'wolfLogLevel')"></td>
-                            <td>
-                                <label for="useCustomWolfLogLevel">Log Level</label><br>
-                                <small><strong>WOLF_LOG_LEVEL</strong></small>
-                            </td>
-                            <td>
-                                <select id="wolfLogLevel" disabled>
-                                    <option value="ERROR">ERROR</option>
-                                    <option value="WARNING">WARNING</option>
-                                    <option value="INFO" selected>INFO</option>
-                                    <option value="DEBUG">DEBUG</option>
-                                    <option value="TRACE">TRACE</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" id="useCustomGstDebug" onchange="toggleInput('useCustomGstDebug', 'gstDebug')"></td>
-                            <td>
-                                <label for="useCustomGstDebug">GStreamer Debug Level</label><br>
-                                <small><strong>GST_DEBUG</strong></small>
-                            </td>
-                            <td><input type="text" id="gstDebug" value="2" disabled></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" id="useCustomRustBacktrace" onchange="toggleInput('useCustomRustBacktrace', 'rustBacktrace')"></td>
-                            <td>
-                                <label for="useCustomRustBacktrace">Rust Backtrace</label><br>
-                                <small><strong>RUST_BACKTRACE</strong></small>
-                            </td>
-                            <td><input type="text" id="rustBacktrace" value="full" disabled></td>
-                        </tr>
-                    </table>
+                    <div class="option-row">
+                        <input type="checkbox" id="useCustomWolfLogLevel" onchange="toggleInput('useCustomWolfLogLevel', 'wolfLogLevel')">
+                        <div class="option-label">
+                            <label for="useCustomWolfLogLevel">Log Level</label>
+                            <small><strong>WOLF_LOG_LEVEL</strong></small>
+                        </div>
+                        <select id="wolfLogLevel" disabled>
+                            <option value="ERROR">ERROR</option>
+                            <option value="WARNING">WARNING</option>
+                            <option value="INFO" selected>INFO</option>
+                            <option value="DEBUG">DEBUG</option>
+                            <option value="TRACE">TRACE</option>
+                        </select>
+                    </div>
+                    <div class="option-row">
+                        <input type="checkbox" id="useCustomGstDebug" onchange="toggleInput('useCustomGstDebug', 'gstDebug')">
+                        <div class="option-label">
+                            <label for="useCustomGstDebug">GStreamer Debug Level</label>
+                            <small><strong>GST_DEBUG</strong></small>
+                        </div>
+                        <input type="text" id="gstDebug" value="2" disabled>
+                    </div>
+                    <div class="option-row">
+                        <input type="checkbox" id="useCustomRustBacktrace" onchange="toggleInput('useCustomRustBacktrace', 'rustBacktrace')">
+                        <div class="option-label">
+                            <label for="useCustomRustBacktrace">Rust Backtrace</label>
+                            <small><strong>RUST_BACKTRACE</strong></small>
+                        </div>
+                        <input type="text" id="rustBacktrace" value="full" disabled>
+                    </div>
                 </div>
             </div>
         </div>
