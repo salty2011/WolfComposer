@@ -124,35 +124,47 @@
 
     <form id="configForm">
         <h2>Configuration Options</h2>
-        <label for="xdgRuntimeDir">XDG_RUNTIME_DIR:</label>
-        <input type="text" id="xdgRuntimeDir" name="xdgRuntimeDir" value="/wolf_config/cfg/sockets">
+        
+        <div class="section">
+            <h3>1. Graphics Card Type</h3>
+            <label>
+                <input type="radio" name="gpuType" value="intel_amd" checked> Intel/AMD
+            </label>
+            <label>
+                <input type="radio" name="gpuType" value="nvidia"> NVIDIA
+            </label>
+        </div>
 
-        <label for="hostAppsStateFolder">HOST_APPS_STATE_FOLDER:</label>
-        <input type="text" id="hostAppsStateFolder" name="hostAppsStateFolder" value="/wolf_config/clients">
+        <div class="section">
+            <h3>2. Host Apps Location</h3>
+            <label for="hostAppsStateFolder">HOST_APPS_STATE_FOLDER:</label>
+            <input type="text" id="hostAppsStateFolder" name="hostAppsStateFolder" value="/wolf_config/clients">
+        </div>
 
-        <label for="wolfCfgFile">WOLF_CFG_FILE:</label>
-        <input type="text" id="wolfCfgFile" name="wolfCfgFile" value="/wolf_config/cfg/config.toml">
-
-        <label for="wolfPrivateKeyFile">WOLF_PRIVATE_KEY_FILE:</label>
-        <input type="text" id="wolfPrivateKeyFile" name="wolfPrivateKeyFile" value="/wolf_config/cfg/key.pem">
-
-        <label for="wolfPrivateCertFile">WOLF_PRIVATE_CERT_FILE:</label>
-        <input type="text" id="wolfPrivateCertFile" name="wolfPrivateCertFile" value="/wolf_config/cfg/cert.pem">
-
-        <label for="wolfLogLevel">WOLF_LOG_LEVEL:</label>
-        <input type="text" id="wolfLogLevel" name="wolfLogLevel" value="DEBUG">
-
-        <label>
-            <input type="checkbox" id="hasNvidia" name="hasNvidia">
-            Has NVIDIA GPU
-        </label>
-
-        <label>
-            <input type="checkbox" id="advancedSetup" name="advancedSetup" onchange="toggleAdvancedOptions()">
-            Enable Advanced Setup
-        </label>
+        <div class="section">
+            <h3>3. Advanced Configuration</h3>
+            <label>
+                <input type="checkbox" id="advancedSetup" name="advancedSetup" onchange="toggleAdvancedOptions()">
+                Show Advanced Options
+            </label>
+        </div>
 
         <div id="advancedOptions" class="advanced-options">
+            <label for="xdgRuntimeDir">XDG_RUNTIME_DIR:</label>
+            <input type="text" id="xdgRuntimeDir" name="xdgRuntimeDir" value="/wolf_config/cfg/sockets">
+
+            <label for="wolfCfgFile">WOLF_CFG_FILE:</label>
+            <input type="text" id="wolfCfgFile" name="wolfCfgFile" value="/wolf_config/cfg/config.toml">
+
+            <label for="wolfPrivateKeyFile">WOLF_PRIVATE_KEY_FILE:</label>
+            <input type="text" id="wolfPrivateKeyFile" name="wolfPrivateKeyFile" value="/wolf_config/cfg/key.pem">
+
+            <label for="wolfPrivateCertFile">WOLF_PRIVATE_CERT_FILE:</label>
+            <input type="text" id="wolfPrivateCertFile" name="wolfPrivateCertFile" value="/wolf_config/cfg/cert.pem">
+
+            <label for="wolfLogLevel">WOLF_LOG_LEVEL:</label>
+            <input type="text" id="wolfLogLevel" name="wolfLogLevel" value="DEBUG">
+
             <label for="wolfRenderNode">WOLF_RENDER_NODE:</label>
             <input type="text" id="wolfRenderNode" name="wolfRenderNode" value="/dev/dri/renderD129">
 
@@ -239,7 +251,7 @@ services:
                 wolfPrivateKeyFile: form.wolfPrivateKeyFile.value,
                 wolfPrivateCertFile: form.wolfPrivateCertFile.value,
                 wolfLogLevel: form.wolfLogLevel.value,
-                hasNvidia: form.hasNvidia.checked,
+                hasNvidia: form.gpuType.value === 'nvidia',
                 advancedSetup: form.advancedSetup.checked,
                 wolfRenderNode: form.wolfRenderNode.value,
                 wolfEncoderNode: form.wolfEncoderNode.value
@@ -280,10 +292,9 @@ services:
                 document.getElementById('wolfLogLevel').value = environment.WOLF_LOG_LEVEL || '';
 
                 const hasNvidia = environment.NVIDIA_DRIVER_CAPABILITIES && environment.NVIDIA_VISIBLE_DEVICES;
-                document.getElementById('hasNvidia').checked = hasNvidia;
+                document.querySelector('input[name="gpuType"][value="' + (hasNvidia ? 'nvidia' : 'intel_amd') + '"]').checked = true;
 
-                const hasAdvancedSetup = environment.WOLF_RENDER_NODE && environment.WOLF_ENCODER_NODE;
-                document.getElementById('advancedSetup').checked = hasAdvancedSetup;
+                document.getElementById('advancedSetup').checked = true;
                 document.getElementById('wolfRenderNode').value = environment.WOLF_RENDER_NODE || '';
                 document.getElementById('wolfEncoderNode').value = environment.WOLF_ENCODER_NODE || '';
 
