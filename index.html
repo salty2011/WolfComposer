@@ -150,6 +150,14 @@
         .flex-item {
             flex: 1;
         }
+        .card-options {
+            display: flex;
+            flex-direction: column;
+        }
+        .card-content {
+            padding: 15px;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -180,47 +188,53 @@
                 </label>
             </div>
             
-            <div id="singleCardOptions" class="subsection single-card">
-                <h4>Card Type:</h4>
-                <div class="radio-group">
-                    <label>
-                        <input type="radio" name="singleGpuType" value="intel_amd" checked> Intel/AMD
-                    </label>
-                    <label>
-                        <input type="radio" name="singleGpuType" value="nvidia"> NVIDIA
-                    </label>
+            <div id="singleCardOptions" class="subsection card-options">
+                <div class="card-content single-card">
+                    <h4>Card Type:</h4>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="singleGpuType" value="intel_amd" checked> Intel/AMD
+                        </label>
+                        <label>
+                            <input type="radio" name="singleGpuType" value="nvidia"> NVIDIA
+                        </label>
+                    </div>
+                    <label for="singleCardPath">Encoder/Render Node Path:</label>
+                    <input type="text" id="singleCardPath" name="singleCardPath" value="renderD128" placeholder="e.g., renderD128" class="node-path-input">
                 </div>
-                <label for="singleCardPath">Encoder/Render Node Path:</label>
-                <input type="text" id="singleCardPath" name="singleCardPath" value="renderD128" placeholder="e.g., renderD128" class="node-path-input">
             </div>
             
-            <div id="dualCardOptions" class="subsection hidden">
+            <div id="dualCardOptions" class="subsection card-options hidden">
                 <div class="flex-container">
-                    <div class="subsection flex-item encoder-node">
-                        <h4>Encoder Node:</h4>
-                        <div class="radio-group">
-                            <label>
-                                <input type="radio" name="encoderGpuType" value="intel_amd" checked> Intel/AMD
-                            </label>
-                            <label>
-                                <input type="radio" name="encoderGpuType" value="nvidia"> NVIDIA
-                            </label>
+                    <div class="flex-item">
+                        <div class="card-content encoder-node">
+                            <h4>Encoder Node:</h4>
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" name="encoderGpuType" value="intel_amd" checked> Intel/AMD
+                                </label>
+                                <label>
+                                    <input type="radio" name="encoderGpuType" value="nvidia"> NVIDIA
+                                </label>
+                            </div>
+                            <label for="encoderNodePath">Encoder Node Path:</label>
+                            <input type="text" id="encoderNodePath" name="encoderNodePath" value="renderD128" placeholder="e.g., renderD128" class="node-path-input">
                         </div>
-                        <label for="encoderNodePath">Encoder Node Path:</label>
-                        <input type="text" id="encoderNodePath" name="encoderNodePath" value="renderD128" placeholder="e.g., renderD128" class="node-path-input">
                     </div>
-                    <div class="subsection flex-item render-node">
-                        <h4>Render Node:</h4>
-                        <div class="radio-group">
-                            <label>
-                                <input type="radio" name="renderGpuType" value="intel_amd" checked> Intel/AMD
-                            </label>
-                            <label>
-                                <input type="radio" name="renderGpuType" value="nvidia"> NVIDIA
-                            </label>
+                    <div class="flex-item">
+                        <div class="card-content render-node">
+                            <h4>Render Node:</h4>
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" name="renderGpuType" value="intel_amd" checked> Intel/AMD
+                                </label>
+                                <label>
+                                    <input type="radio" name="renderGpuType" value="nvidia"> NVIDIA
+                                </label>
+                            </div>
+                            <label for="renderNodePath">Render Node Path:</label>
+                            <input type="text" id="renderNodePath" name="renderNodePath" value="renderD129" placeholder="e.g., renderD129" class="node-path-input">
                         </div>
-                        <label for="renderNodePath">Render Node Path:</label>
-                        <input type="text" id="renderNodePath" name="renderNodePath" value="renderD129" placeholder="e.g., renderD129" class="node-path-input">
                     </div>
                 </div>
             </div>
