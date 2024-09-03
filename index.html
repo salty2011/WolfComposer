@@ -102,45 +102,6 @@
         #prerequisites li {
             margin-bottom: 10px;
         }
-        .advanced-options {
-            border-top: 1px solid #ddd;
-            margin-top: 20px;
-            padding-top: 20px;
-            display: none;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-            border-radius: 8px;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .close:hover,
-        .close:focus {
-            color: #000;
-            text-decoration: none;
-            cursor: pointer;
-        }
         .section {
             margin-bottom: 30px;
             padding: 20px;
@@ -215,196 +176,224 @@
         .option-row select {
             width: 250px;
         }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+        }
+        .tab.active {
+            background-color: #fff;
+            border-bottom: 1px solid #fff;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 0 5px 5px 5px;
+        }
+        .tab-content.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
     <h1>WolfComposer</h1>
     
     <form id="configForm">
-        <h2>Configuration Options</h2>
-        
-        <div class="section">
-            <h3>Graphics Card Setup</h3>
-            <div class="radio-group">
-                <label>
-                    <input type="radio" name="cardSetup" value="single" checked onchange="toggleCardSetup()"> Single Card
-                </label>
-                <label>
-                    <input type="radio" name="cardSetup" value="dual" onchange="toggleCardSetup()"> Dual Card
-                </label>
-            </div>
-            
-            <div class="card-options">
-                <div id="singleCardOptions" class="subsection">
-                    <div class="card-content single-card">
-                        <h4>Card Type:</h4>
-                        <div class="radio-group">
-                            <label>
-                                <input type="radio" name="singleGpuType" value="intel_amd" checked> Intel/AMD
-                            </label>
-                            <label>
-                                <input type="radio" name="singleGpuType" value="nvidia"> NVIDIA
-                            </label>
-                        </div>
-                    </div>
+        <div class="tabs">
+            <div class="tab active" onclick="openTab(event, 'getStarted')">Get Started</div>
+            <div class="tab" onclick="openTab(event, 'advanced')">Advanced</div>
+            <div class="tab" onclick="openTab(event, 'debug')">Debug Options</div>
+        </div>
+
+        <div id="getStarted" class="tab-content active">
+            <div class="section">
+                <h3>Graphics Card Setup</h3>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="cardSetup" value="single" checked onchange="toggleCardSetup()"> Single Card
+                    </label>
+                    <label>
+                        <input type="radio" name="cardSetup" value="dual" onchange="toggleCardSetup()"> Dual Card
+                    </label>
                 </div>
                 
-                <div id="dualCardOptions" class="subsection hidden">
-                    <div class="flex-container">
-                        <div class="flex-item">
-                            <div class="card-content encoder-node">
-                                <h4>Encoder Node:</h4>
-                                <div class="radio-group">
-                                    <label>
-                                        <input type="radio" name="encoderGpuType" value="intel_amd" checked> Intel/AMD
-                                    </label>
-                                    <label>
-                                        <input type="radio" name="encoderGpuType" value="nvidia"> NVIDIA
-                                    </label>
-                                </div>
-                                <label for="encoderNodePath">Encoder Node Path:</label>
-                                <input type="text" id="encoderNodePath" name="encoderNodePath" value="renderD128" placeholder="e.g., renderD128" class="node-path-input">
+                <div class="card-options">
+                    <div id="singleCardOptions" class="subsection">
+                        <div class="card-content single-card">
+                            <h4>Card Type:</h4>
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" name="singleGpuType" value="intel_amd" checked> Intel/AMD
+                                </label>
+                                <label>
+                                    <input type="radio" name="singleGpuType" value="nvidia"> NVIDIA
+                                </label>
                             </div>
                         </div>
-                        <div class="flex-item">
-                            <div class="card-content render-node">
-                                <h4>Render Node:</h4>
-                                <div class="radio-group">
-                                    <label>
-                                        <input type="radio" name="renderGpuType" value="intel_amd" checked> Intel/AMD
-                                    </label>
-                                    <label>
-                                        <input type="radio" name="renderGpuType" value="nvidia"> NVIDIA
-                                    </label>
+                    </div>
+                    
+                    <div id="dualCardOptions" class="subsection hidden">
+                        <div class="flex-container">
+                            <div class="flex-item">
+                                <div class="card-content encoder-node">
+                                    <h4>Encoder Node:</h4>
+                                    <div class="radio-group">
+                                        <label>
+                                            <input type="radio" name="encoderGpuType" value="intel_amd" checked> Intel/AMD
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="encoderGpuType" value="nvidia"> NVIDIA
+                                        </label>
+                                    </div>
+                                    <label for="encoderNodePath">Encoder Node Path:</label>
+                                    <input type="text" id="encoderNodePath" name="encoderNodePath" value="renderD128" placeholder="e.g., renderD128" class="node-path-input">
                                 </div>
-                                <label for="renderNodePath">Render Node Path:</label>
-                                <input type="text" id="renderNodePath" name="renderNodePath" value="renderD129" placeholder="e.g., renderD129" class="node-path-input">
+                            </div>
+                            <div class="flex-item">
+                                <div class="card-content render-node">
+                                    <h4>Render Node:</h4>
+                                    <div class="radio-group">
+                                        <label>
+                                            <input type="radio" name="renderGpuType" value="intel_amd" checked> Intel/AMD
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="renderGpuType" value="nvidia"> NVIDIA
+                                        </label>
+                                    </div>
+                                    <label for="renderNodePath">Render Node Path:</label>
+                                    <input type="text" id="renderNodePath" name="renderNodePath" value="renderD129" placeholder="e.g., renderD129" class="node-path-input">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div class="section">
+                <h3>Wolf Configuration</h3>
+                <label for="hostWolfLocation">Host Wolf location:</label>
+                <input type="text" id="hostWolfLocation" name="hostWolfLocation" value="/wolf_host">
+            </div>
         </div>
 
-        <div class="section">
-            <h3>Wolf Configuration</h3>
-            <label for="hostWolfLocation">Host Wolf location:</label>
-            <input type="text" id="hostWolfLocation" name="hostWolfLocation" value="/wolf_host">
-            
-            <div class="subsection">
-                <h4 onclick="toggleAdvancedOptions()" style="cursor: pointer;">Advanced Configuration ▼</h4>
-                <div id="advancedOptions" style="display: none;">
-                    <div class="option-row">
-                        <input type="checkbox" id="useCustomAppsStateFolder" onchange="toggleCustomAppsStateFolder()">
-                        <div class="option-label">
-                            <label for="useCustomAppsStateFolder">Custom Application State Folder</label>
-                            <small><strong>HOST_APPS_STATE_FOLDER</strong></small>
-                        </div>
-                        <input type="text" id="hostAppsStateFolder" value="/mnt/games/wolf_clients" disabled>
+        <div id="advanced" class="tab-content">
+            <div class="section">
+                <h3>Advanced Configuration</h3>
+                <div class="option-row">
+                    <input type="checkbox" id="useCustomAppsStateFolder" onchange="toggleCustomAppsStateFolder()">
+                    <div class="option-label">
+                        <label for="useCustomAppsStateFolder">Custom Application State Folder</label>
+                        <small><strong>HOST_APPS_STATE_FOLDER</strong></small>
                     </div>
-                    <div class="option-row">
-                        <input type="checkbox" id="useCustomXdgRuntimeDir" onchange="toggleInput('useCustomXdgRuntimeDir', 'xdgRuntimeDir')">
-                        <div class="option-label">
-                            <label for="useCustomXdgRuntimeDir">Runtime Directory</label>
-                            <small><strong>XDG_RUNTIME_DIR</strong></small>
-                        </div>
-                        <input type="text" id="xdgRuntimeDir" value="/wolf_config/cfg/sockets" disabled>
+                    <input type="text" id="hostAppsStateFolder" value="/mnt/games/wolf_clients" disabled>
+                </div>
+                <div class="option-row">
+                    <input type="checkbox" id="useCustomXdgRuntimeDir" onchange="toggleInput('useCustomXdgRuntimeDir', 'xdgRuntimeDir')">
+                    <div class="option-label">
+                        <label for="useCustomXdgRuntimeDir">Runtime Directory</label>
+                        <small><strong>XDG_RUNTIME_DIR</strong></small>
                     </div>
-                    <div class="option-row">
-                        <input type="checkbox" id="useCustomWolfCfgFile" onchange="toggleInput('useCustomWolfCfgFile', 'wolfCfgFile')">
-                        <div class="option-label">
-                            <label for="useCustomWolfCfgFile">Wolf Configuration File</label>
-                            <small><strong>WOLF_CFG_FILE</strong></small>
-                        </div>
-                        <input type="text" id="wolfCfgFile" value="/wolf_config/cfg/config.toml" disabled>
+                    <input type="text" id="xdgRuntimeDir" value="/wolf_config/cfg/sockets" disabled>
+                </div>
+                <div class="option-row">
+                    <input type="checkbox" id="useCustomWolfCfgFile" onchange="toggleInput('useCustomWolfCfgFile', 'wolfCfgFile')">
+                    <div class="option-label">
+                        <label for="useCustomWolfCfgFile">Wolf Configuration File</label>
+                        <small><strong>WOLF_CFG_FILE</strong></small>
                     </div>
-                    <div class="option-row">
-                        <input type="checkbox" id="useCustomWolfPrivateKeyFile" onchange="toggleInput('useCustomWolfPrivateKeyFile', 'wolfPrivateKeyFile')">
-                        <div class="option-label">
-                            <label for="useCustomWolfPrivateKeyFile">Private Key File</label>
-                            <small><strong>WOLF_PRIVATE_KEY_FILE</strong></small>
-                        </div>
-                        <input type="text" id="wolfPrivateKeyFile" value="/wolf_config/cfg/key.pem" disabled>
+                    <input type="text" id="wolfCfgFile" value="/wolf_config/cfg/config.toml" disabled>
+                </div>
+                <div class="option-row">
+                    <input type="checkbox" id="useCustomWolfPrivateKeyFile" onchange="toggleInput('useCustomWolfPrivateKeyFile', 'wolfPrivateKeyFile')">
+                    <div class="option-label">
+                        <label for="useCustomWolfPrivateKeyFile">Private Key File</label>
+                        <small><strong>WOLF_PRIVATE_KEY_FILE</strong></small>
                     </div>
-                    <div class="option-row">
-                        <input type="checkbox" id="useCustomWolfPrivateCertFile" onchange="toggleInput('useCustomWolfPrivateCertFile', 'wolfPrivateCertFile')">
-                        <div class="option-label">
-                            <label for="useCustomWolfPrivateCertFile">Private Certificate File</label>
-                            <small><strong>WOLF_PRIVATE_CERT_FILE</strong></small>
-                        </div>
-                        <input type="text" id="wolfPrivateCertFile" value="/wolf_config/cfg/cert.pem" disabled>
+                    <input type="text" id="wolfPrivateKeyFile" value="/wolf_config/cfg/key.pem" disabled>
+                </div>
+                <div class="option-row">
+                    <input type="checkbox" id="useCustomWolfPrivateCertFile" onchange="toggleInput('useCustomWolfPrivateCertFile', 'wolfPrivateCertFile')">
+                    <div class="option-label">
+                        <label for="useCustomWolfPrivateCertFile">Private Certificate File</label>
+                        <small><strong>WOLF_PRIVATE_CERT_FILE</strong></small>
                     </div>
-                    <div class="option-row">
-                        <input type="checkbox" id="useWolfStopContainerOnExit" onchange="toggleInput('useWolfStopContainerOnExit', 'wolfStopContainerOnExit')">
-                        <div class="option-label">
-                            <label for="useWolfStopContainerOnExit">Stop Container on Exit</label>
-                            <small><strong>WOLF_STOP_CONTAINER_ON_EXIT</strong></small>
-                        </div>
-                        <input type="checkbox" id="wolfStopContainerOnExit" checked disabled>
+                    <input type="text" id="wolfPrivateCertFile" value="/wolf_config/cfg/cert.pem" disabled>
+                </div>
+                <div class="option-row">
+                    <input type="checkbox" id="useWolfStopContainerOnExit" onchange="toggleInput('useWolfStopContainerOnExit', 'wolfStopContainerOnExit')">
+                    <div class="option-label">
+                        <label for="useWolfStopContainerOnExit">Stop Container on Exit</label>
+                        <small><strong>WOLF_STOP_CONTAINER_ON_EXIT</strong></small>
                     </div>
-                    <div class="option-row">
-                        <input type="checkbox" id="useCustomWolfDockerFakeUdevPath" onchange="toggleInput('useCustomWolfDockerFakeUdevPath', 'wolfDockerFakeUdevPath')">
-                        <div class="option-label">
-                            <label for="useCustomWolfDockerFakeUdevPath">Fake udev Path</label>
-                            <small><strong>WOLF_DOCKER_FAKE_UDEV_PATH</strong></small>
-                        </div>
-                        <input type="text" id="wolfDockerFakeUdevPath" value="/wolf_config/cfg/fake-udev" disabled>
+                    <input type="checkbox" id="wolfStopContainerOnExit" checked disabled>
+                </div>
+                <div class="option-row">
+                    <input type="checkbox" id="useCustomWolfDockerFakeUdevPath" onchange="toggleInput('useCustomWolfDockerFakeUdevPath', 'wolfDockerFakeUdevPath')">
+                    <div class="option-label">
+                        <label for="useCustomWolfDockerFakeUdevPath">Fake udev Path</label>
+                        <small><strong>WOLF_DOCKER_FAKE_UDEV_PATH</strong></small>
                     </div>
-                    <div class="option-row">
-                        <input type="checkbox" id="useCustomWolfDockerSocket" onchange="toggleInput('useCustomWolfDockerSocket', 'wolfDockerSocket')">
-                        <div class="option-label">
-                            <label for="useCustomWolfDockerSocket">Docker Socket Path</label>
-                            <small><strong>WOLF_DOCKER_SOCKET</strong></small>
-                        </div>
-                        <input type="text" id="wolfDockerSocket" value="/var/run/docker.sock" disabled>
+                    <input type="text" id="wolfDockerFakeUdevPath" value="/wolf_config/cfg/fake-udev" disabled>
+                </div>
+                <div class="option-row">
+                    <input type="checkbox" id="useCustomWolfDockerSocket" onchange="toggleInput('useCustomWolfDockerSocket', 'wolfDockerSocket')">
+                    <div class="option-label">
+                        <label for="useCustomWolfDockerSocket">Docker Socket Path</label>
+                        <small><strong>WOLF_DOCKER_SOCKET</strong></small>
                     </div>
-                    <div class="option-row">
-                        <input type="checkbox" id="useCustomWolfPulseImage" onchange="toggleInput('useCustomWolfPulseImage', 'wolfPulseImage')">
-                        <div class="option-label">
-                            <label for="useCustomWolfPulseImage">PulseAudio Image</label>
-                            <small><strong>WOLF_PULSE_IMAGE</strong></small>
-                        </div>
-                        <input type="text" id="wolfPulseImage" value="ghcr.io/games-on-whales/pulseaudio:master" disabled>
+                    <input type="text" id="wolfDockerSocket" value="/var/run/docker.sock" disabled>
+                </div>
+                <div class="option-row">
+                    <input type="checkbox" id="useCustomWolfPulseImage" onchange="toggleInput('useCustomWolfPulseImage', 'wolfPulseImage')">
+                    <div class="option-label">
+                        <label for="useCustomWolfPulseImage">PulseAudio Image</label>
+                        <small><strong>WOLF_PULSE_IMAGE</strong></small>
                     </div>
+                    <input type="text" id="wolfPulseImage" value="ghcr.io/games-on-whales/pulseaudio:master" disabled>
                 </div>
             </div>
         </div>
 
-        <div class="section">
-            <h3>Debug Settings</h3>
-            <div class="subsection">
-                <h4 onclick="toggleDebugOptions()" style="cursor: pointer;">Debug Options ▼</h4>
-                <div id="debugOptions" style="display: none;">
-                    <div class="option-row">
-                        <input type="checkbox" id="useCustomWolfLogLevel" onchange="toggleInput('useCustomWolfLogLevel', 'wolfLogLevel')">
-                        <div class="option-label">
-                            <label for="useCustomWolfLogLevel">Log Level</label>
-                            <small><strong>WOLF_LOG_LEVEL</strong></small>
-                        </div>
-                        <select id="wolfLogLevel" disabled>
-                            <option value="ERROR">ERROR</option>
-                            <option value="WARNING">WARNING</option>
-                            <option value="INFO" selected>INFO</option>
-                            <option value="DEBUG">DEBUG</option>
-                            <option value="TRACE">TRACE</option>
-                        </select>
+        <div id="debug" class="tab-content">
+            <div class="section">
+                <h3>Debug Options</h3>
+                <div class="option-row">
+                    <input type="checkbox" id="useCustomWolfLogLevel" onchange="toggleInput('useCustomWolfLogLevel', 'wolfLogLevel')">
+                    <div class="option-label">
+                        <label for="useCustomWolfLogLevel">Log Level</label>
+                        <small><strong>WOLF_LOG_LEVEL</strong></small>
                     </div>
-                    <div class="option-row">
-                        <input type="checkbox" id="useCustomGstDebug" onchange="toggleInput('useCustomGstDebug', 'gstDebug')">
-                        <div class="option-label">
-                            <label for="useCustomGstDebug">GStreamer Debug Level</label>
-                            <small><strong>GST_DEBUG</strong></small>
-                        </div>
-                        <input type="text" id="gstDebug" value="2" disabled>
+                    <select id="wolfLogLevel" disabled>
+                        <option value="ERROR">ERROR</option>
+                        <option value="WARNING">WARNING</option>
+                        <option value="INFO" selected>INFO</option>
+                        <option value="DEBUG">DEBUG</option>
+                        <option value="TRACE">TRACE</option>
+                    </select>
+                </div>
+                <div class="option-row">
+                    <input type="checkbox" id="useCustomGstDebug" onchange="toggleInput('useCustomGstDebug', 'gstDebug')">
+                    <div class="option-label">
+                        <label for="useCustomGstDebug">GStreamer Debug Level</label>
+                        <small><strong>GST_DEBUG</strong></small>
                     </div>
-                    <div class="option-row">
-                        <input type="checkbox" id="useCustomRustBacktrace" onchange="toggleInput('useCustomRustBacktrace', 'rustBacktrace')">
-                        <div class="option-label">
-                            <label for="useCustomRustBacktrace">Rust Backtrace</label>
-                            <small><strong>RUST_BACKTRACE</strong></small>
-                        </div>
-                        <input type="text" id="rustBacktrace" value="full" disabled>
+                    <input type="text" id="gstDebug" value="2" disabled>
+                </div>
+                <div class="option-row">
+                    <input type="checkbox" id="useCustomRustBacktrace" onchange="toggleInput('useCustomRustBacktrace', 'rustBacktrace')">
+                    <div class="option-label">
+                        <label for="useCustomRustBacktrace">Rust Backtrace</label>
+                        <small><strong>RUST_BACKTRACE</strong></small>
                     </div>
+                    <input type="text" id="rustBacktrace" value="full" disabled>
                 </div>
             </div>
         </div>
@@ -486,6 +475,20 @@ services:
     </script>
 
     <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tab");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
         function toggleCardSetup() {
             const singleCardOptions = document.getElementById('singleCardOptions');
             const dualCardOptions = document.getElementById('dualCardOptions');
@@ -493,16 +496,6 @@ services:
             
             singleCardOptions.style.display = isSingleCard ? 'block' : 'none';
             dualCardOptions.style.display = isSingleCard ? 'none' : 'block';
-        }
-
-        function toggleAdvancedOptions() {
-            const advancedOptions = document.getElementById('advancedOptions');
-            advancedOptions.style.display = advancedOptions.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function toggleDebugOptions() {
-            const debugOptions = document.getElementById('debugOptions');
-            debugOptions.style.display = debugOptions.style.display === 'none' ? 'block' : 'none';
         }
 
         function toggleInput(checkboxId, inputId) {
