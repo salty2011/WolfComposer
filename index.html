@@ -178,7 +178,7 @@
         <h2>Configuration Options</h2>
         
         <div class="section">
-            <h3>1. Graphics Card Setup</h3>
+            <h3>Graphics Card Setup</h3>
             <div class="radio-group">
                 <label>
                     <input type="radio" name="cardSetup" value="single" checked onchange="toggleCardSetup()"> Single Card
@@ -243,7 +243,7 @@
         </div>
 
         <div class="section">
-            <h3>2. Wolf Configuration</h3>
+            <h3>Wolf Configuration</h3>
             <label for="hostWolfLocation">Host Wolf location:</label>
             <input type="text" id="hostWolfLocation" name="hostWolfLocation" value="/wolf_host">
             
@@ -301,34 +301,37 @@
             </div>
         </div>
 
-        <div class="subsection">
-            <h4 onclick="toggleDebugOptions()" style="cursor: pointer;">Debug Settings ▼</h4>
-            <div id="debugOptions" style="display: none;">
-                <table>
-                    <tr>
-                        <td><input type="checkbox" id="useCustomWolfLogLevel" onchange="toggleInput('useCustomWolfLogLevel', 'wolfLogLevel')"></td>
-                        <td><label for="useCustomWolfLogLevel">WOLF_LOG_LEVEL:</label></td>
-                        <td>
-                            <select id="wolfLogLevel" disabled>
-                                <option value="ERROR">ERROR</option>
-                                <option value="WARNING">WARNING</option>
-                                <option value="INFO" selected>INFO</option>
-                                <option value="DEBUG">DEBUG</option>
-                                <option value="TRACE">TRACE</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" id="useCustomGstDebug" onchange="toggleInput('useCustomGstDebug', 'gstDebug')"></td>
-                        <td><label for="useCustomGstDebug">GST_DEBUG:</label></td>
-                        <td><input type="text" id="gstDebug" value="2" disabled></td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" id="useCustomRustBacktrace" onchange="toggleInput('useCustomRustBacktrace', 'rustBacktrace')"></td>
-                        <td><label for="useCustomRustBacktrace">RUST_BACKTRACE:</label></td>
-                        <td><input type="text" id="rustBacktrace" value="full" disabled></td>
-                    </tr>
-                </table>
+        <div class="section">
+            <h3>Debug Settings</h3>
+            <div class="subsection">
+                <h4 onclick="toggleDebugOptions()" style="cursor: pointer;">Debug Options ▼</h4>
+                <div id="debugOptions" style="display: none;">
+                    <table>
+                        <tr>
+                            <td><input type="checkbox" id="useCustomWolfLogLevel" onchange="toggleInput('useCustomWolfLogLevel', 'wolfLogLevel')"></td>
+                            <td><label for="useCustomWolfLogLevel">WOLF_LOG_LEVEL:</label></td>
+                            <td>
+                                <select id="wolfLogLevel" disabled>
+                                    <option value="ERROR">ERROR</option>
+                                    <option value="WARNING">WARNING</option>
+                                    <option value="INFO" selected>INFO</option>
+                                    <option value="DEBUG">DEBUG</option>
+                                    <option value="TRACE">TRACE</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" id="useCustomGstDebug" onchange="toggleInput('useCustomGstDebug', 'gstDebug')"></td>
+                            <td><label for="useCustomGstDebug">GST_DEBUG:</label></td>
+                            <td><input type="text" id="gstDebug" value="2" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" id="useCustomRustBacktrace" onchange="toggleInput('useCustomRustBacktrace', 'rustBacktrace')"></td>
+                            <td><label for="useCustomRustBacktrace">RUST_BACKTRACE:</label></td>
+                            <td><input type="text" id="rustBacktrace" value="full" disabled></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
 
